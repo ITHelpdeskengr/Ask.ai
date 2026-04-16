@@ -112,17 +112,24 @@ export function AuthProvider({ children }) {
     }
   }, [handleAuthResponse]);
 
-  // Combined login and authorization
-  const loginAndAuthorizeWithGoogle = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      loginWithGoogle(tokenResponse);
-    },
-    onError: (error) => console.error('[GOOGLE AUTH] Error:', error),
-    scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
-    prompt: 'consent',
-  });
+  // Handle Google Auth safely - will only be used if client ID is present
+  const googleLoginHook = (() => {
+    try {
+      return useGoogleLogin({
+        onSuccess: (tokenResponse) => {
+          loginWithGoogle(tokenResponse);
+        },
+        onError: (error) => console.error('[GOOGLE AUTH] Error:', error),
+        scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
+        prompt: 'consent',
+      });
+    } catch (e) {
+      return () => console.warn('Google Login unavailable: Provider not found');
+    }
+  })();
 
-  const requestGoogleAccess = loginAndAuthorizeWithGoogle;
+  const loginAndAuthorizeWithGoogle = googleLoginHook;
+  const requestGoogleAccess = googleLoginHook;
 
   const updateProfile = useCallback((updatedUser, newToken) => {
     setUser(prev => ({

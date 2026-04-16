@@ -14,22 +14,28 @@ export default function LoginPage() {
   const { login, loginWithGoogle, challengeData, setChallengeData, verifySecurityCode } = useAuth();
   const { theme, toggle } = useTheme();
 
-  const handleGoogleAuth = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setLoading(true);
-      setError('');
-      const result = await loginWithGoogle(tokenResponse);
-      if (result?.pendingApproval) {
-        setPendingVerification({ email: result.email, isNewUser: result.isNewUser });
-      } else if (!result?.success) {
-        setError(result?.error || 'Google Sign-In failed');
-      }
-      setLoading(false);
-    },
-    onError: () => setError('Google Sign-In was cancelled or failed'),
-    scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
-    prompt: 'consent',
-  });
+  const handleGoogleAuth = (() => {
+    try {
+      return useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+          setLoading(true);
+          setError('');
+          const result = await loginWithGoogle(tokenResponse);
+          if (result?.pendingApproval) {
+            setPendingVerification({ email: result.email, isNewUser: result.isNewUser });
+          } else if (!result?.success) {
+            setError(result?.error || 'Google Sign-In failed');
+          }
+          setLoading(false);
+        },
+        onError: () => setError('Google Sign-In was cancelled or failed'),
+        scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
+        prompt: 'consent',
+      });
+    } catch (e) {
+      return () => setError('Google Login is currently disabled. Please contact the administrator.');
+    }
+  })();
 
   const handleSubmit = (e) => {
     e.preventDefault();
