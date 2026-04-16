@@ -22,7 +22,8 @@ class GoogleAuthService {
       const body = headerMatch[2]
         .replace(/\s/g, '')
         .replace(/[^A-Za-z0-9+/=]/g, '');
-      const wrappedBody = body.match(/.{1,64}/g).join('\n');
+      const match = body.match(/.{1,64}/g);
+      const wrappedBody = match ? match.join('\n') : '';
       this.privateKey = `${header}\n${wrappedBody}\n${footer}\n`;
     } else {
       this.privateKey = rawKey;
