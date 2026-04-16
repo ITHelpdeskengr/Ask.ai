@@ -33,7 +33,8 @@ class DriveSyncService {
         .replace(/[^A-Za-z0-9+/=]/g, '');
       
       // Step 4: Re-wrap at standard 64-char PEM line length
-      const wrappedBody = body.match(/.{1,64}/g).join('\n');
+      const chunks = body.match(/.{1,64}/g);
+      const wrappedBody = chunks ? chunks.join('\n') : '';
       this.privateKey = `${header}\n${wrappedBody}\n${footer}\n`;
     } else {
       this.privateKey = rawKey;

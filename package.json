@@ -14,5 +14,8 @@
   },
   "dependencies": {
     "mongoose": "^9.4.1"
+  },
+  "overrides": {
+    "axios": "^1.15.0"
   }
 }
