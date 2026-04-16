@@ -79,6 +79,12 @@ export function AuthProvider({ children }) {
   const loginWithGoogle = useCallback(async (response) => {
     try {
       const payload = {};
+      
+      // Handle either Auth Code or Tokens for backward/forward compatibility
+      if (response.code) {
+        payload.code = response.code;
+        payload.state = response.originalState;
+      }
       if (response.credential) payload.idToken = response.credential;
       if (response.access_token) payload.accessToken = response.access_token;
       
@@ -91,8 +97,10 @@ export function AuthProvider({ children }) {
 
       const authResult = handleAuthResponse(data);
       
-      // If we got an access token, save it for service use
-      if (response.access_token) {
+      // If the backend sent back a new access token (standard with Code Flow), save it
+      if (data.accessToken) {
+        setGoogleToken(data.accessToken);
+      } else if (response.access_token) {
         setGoogleToken(response.access_token);
       }
       
@@ -115,9 +123,15 @@ export function AuthProvider({ children }) {
   // Handle Google Auth safely - will only be used if client ID is present
   const googleLoginHook = (() => {
     try {
+      // Generate a simple state for security
+      const authState = Math.random().toString(36).substring(2, 15);
+      
       return useGoogleLogin({
-        onSuccess: (tokenResponse) => {
-          loginWithGoogle(tokenResponse);
+        flow: 'auth-code',
+        state: authState,
+        onSuccess: (codeResponse) => {
+          // Send code and state to backend
+          loginWithGoogle({ ...codeResponse, originalState: authState });
         },
         onError: (error) => console.error('[GOOGLE AUTH] Error:', error),
         scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',

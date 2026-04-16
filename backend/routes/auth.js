@@ -10,7 +10,11 @@ const googleAuthService = require('../services/googleAuthService');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const client = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  'postmessage'
+);
 const JWT_SECRET = process.env.JWT_SECRET || 'your_fallback_secret';
 
 /**
@@ -87,14 +91,34 @@ router.post('/register', async (req, res) => {
 
 // POST /api/auth/google
 router.post('/google', async (req, res) => {
-  const { idToken, accessToken } = req.body;
-  if (!idToken && !accessToken) return res.status(400).json({ error: 'idToken or accessToken is required' });
+  const { idToken, accessToken, code, state } = req.body;
+  
+  if (!idToken && !accessToken && !code) {
+    return res.status(400).json({ error: 'idToken, accessToken, or code is required' });
+  }
 
   try {
     let googleId, email, name, avatar;
+    let exchangedAccessToken = null;
 
-    if (accessToken) {
-      // Verify via accessToken (Unified Flow)
+    if (code) {
+      // Modern Flow: Exchange Auth Code for Tokens
+      // Note: We don't strictly *need* to verify the state on the backend for the 
+      // GIS popup flow as much as for redirect flows, but receiving it is good.
+      const { tokens } = await client.getToken(code);
+      exchangedAccessToken = tokens.access_token;
+      
+      const ticket = await client.verifyIdToken({
+        idToken: tokens.id_token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
+      googleId = payload.sub;
+      email = payload.email;
+      name = payload.name;
+      avatar = payload.picture;
+    } else if (accessToken) {
+      // Legacy Flow: Verify via accessToken (Unified Flow)
       const { data } = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
@@ -103,7 +127,7 @@ router.post('/google', async (req, res) => {
       name = data.name;
       avatar = data.picture;
     } else {
-      // Verify via idToken (Legacy Flow)
+      // Legacy Flow: Verify via idToken
       const ticket = await client.verifyIdToken({
         idToken,
         audience: process.env.GOOGLE_CLIENT_ID,
@@ -141,9 +165,25 @@ router.post('/google', async (req, res) => {
     try {
       const tempToken = await prepareSecurityChallenge(user);
       if (tempToken) {
-        return res.json({ requireVerification: true, tempToken, email: user.email });
+        return res.json({ 
+          requireVerification: true, 
+          tempToken, 
+          email: user.email,
+          accessToken: exchangedAccessToken // Send back the new token retrieved from code
+        });
       }
-      sendFullAuthResponse(user, res);
+      
+      // Standard auth response
+      const token = jwt.sign(
+        { id: user._id, email: user.email, name: user.name, role: user.role },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      res.json({
+        token,
+        user: { id: user._id, email: user.email, name: user.name, avatar: user.avatar, role: user.role },
+        accessToken: exchangedAccessToken // Standard with Code Flow
+      });
     } catch (gErr) {
       console.error('[SECURITY CHALLENGE ERROR]', gErr.message);
       res.status(500).json({ error: 'Failed to initiate security challenge: ' + gErr.message });
