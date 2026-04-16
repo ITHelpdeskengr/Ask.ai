@@ -13,6 +13,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "mongodb": "^7.1.1",
     "mongoose": "^9.4.1"
   },
   "overrides": {
