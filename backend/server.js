@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const fs = require('fs');
 const cron = require('node-cron');
 const connectDB = require('./config/db');
 const backgroundService = require('./services/backgroundService');
@@ -64,6 +65,18 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/knowledge', require('./routes/knowledge'));
 
+// Diagnostic route for deployment debugging
+app.get('/api/debug-path', (req, res) => {
+  const distPath = path.join(__dirname, '..', 'frontend', 'dist');
+  res.json({
+    dirname: __dirname,
+    expectedDist: distPath,
+    exists: fs.existsSync(distPath),
+    contents: fs.existsSync(distPath) ? fs.readdirSync(distPath) : 'NOT FOUND',
+    env: process.env.NODE_ENV,
+    cwd: process.cwd()
+  });
+});
 // Serve Static Assets in production
 const frontendDistPath = path.join(__dirname, '..', 'frontend', 'dist');
 app.use(express.static(frontendDistPath));
@@ -102,6 +115,21 @@ app.listen(PORT, () => {
   console.log(`\n🤖 ${process.env.APP_NAME || 'AI Chatbot'} server running on port ${PORT}`);
   console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔗 http://localhost:${PORT}\n`);
+
+  // Deployment Diagnostic
+  const distPath = path.join(__dirname, '..', 'frontend', 'dist');
+  if (fs.existsSync(distPath)) {
+    console.log(`✅ Frontend dist detected at: ${distPath}`);
+    if (fs.existsSync(path.join(distPath, 'index.html'))) {
+      console.log('✅ index.html is ready.');
+    } else {
+      console.warn('❌ index.html MISSING in dist folder!');
+    }
+  } else {
+    console.warn(`❌ Frontend dist NOT FOUND at: ${distPath}`);
+    console.warn('   Make sure you ran "npm run build" from the root directory.');
+  }
+
   backgroundService.start();
 
   // Schedule Google Drive Knowledge Base Sync (Every 15 minutes)
