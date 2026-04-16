@@ -1,0 +1,48 @@
+services:
+  # Backend API
+  - type: web
+    name: ask-ai-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      # Set these in Render Dashboard → Environment:
+      - key: MONGODB_URI
+        sync: false   # Set manually in dashboard
+      - key: GROQ_API_KEY
+        sync: false   # Set manually in dashboard
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: MS_TEAMS_WEBHOOK_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false   # Set to your frontend URL after deploy
+
+  # Frontend Static Site
+  - type: web
+    name: ask-ai-ui
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false   # Set to your backend URL: https://ask-ai-api.onrender.com/api
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
