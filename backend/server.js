@@ -64,13 +64,27 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/knowledge', require('./routes/knowledge'));
 
-// Root
+// Serve Static Assets in production
+const frontendDistPath = path.join(__dirname, '..', 'frontend', 'dist');
+app.use(express.static(frontendDistPath));
+
+// Handle React Routing - redirect all non-API routes to index.html
+app.get('*', (req, res, next) => {
+  // If it's an API route or file with extension, don't serve index.html
+  if (req.url.startsWith('/api') || req.url.includes('.')) {
+    return next();
+  }
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
+});
+
+// Root (Fallback if UI not built yet)
 app.get('/', (req, res) => {
   res.json({
     status: 'online',
     app: process.env.APP_NAME || 'AI Chatbot',
     version: '1.0.0',
     uptime: process.uptime(),
+    frontend: 'Not found in dist folder. Run build first.'
   });
 });
 
