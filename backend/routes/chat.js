@@ -15,7 +15,7 @@ const googleDriveService = require('../services/googleDriveService');
 async function processAgentTask(conversation, messageId, message, attachment, history, reqHeaders, userId, userEmail, userName) {
   try {
     const knowledgeCount = await Knowledge.countDocuments();
-    const knowledgeContext = `\n\n[USER IDENTITY]: You are currently helping ${userName || 'User'} (${userEmail}).\n\n[KNOWLEDGE RETRIEVAL HIERARCHY]:\n1. Use the 'search_internal_knowledge' tool first. You have a Knowledge Base containing ${knowledgeCount} documents with system/company information.\n2. If not found, use 'list_safe_workspace_files' and 'read_safe_workspace_file' to check the local workspace.\n3. If still not found, search the user's private Google Drive using 'search_google_drive'.\n4. If the information is missing from ALL internal sources, you MUST automatically switch to 'search_the_web' to find the answer. Never say you don't know without checking the web last.`;
+    const knowledgeContext = `\n\n[USER IDENTITY]: You are currently helping ${userName || 'User'} (${userEmail}).\n\n[KNOWLEDGE RETRIEVAL HIERARCHY]:\n1. Use 'search_internal_knowledge' first. You have ${knowledgeCount} documents in KB.\n2. If results are found, you MUST use 'read_internal_document' for each relevant ID to understand the content.\n3. If not found in KB, check local workspace files and private Google Drive.\n4. If STILL not found, you MUST use 'search_the_web'. Never stop until you have checked the web.\n\n[TRANSPARENCY]: Always state your plan and steps clearly before acting.`;
     const messages = [
       { 
         role: 'system', 
