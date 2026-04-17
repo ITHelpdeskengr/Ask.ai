@@ -107,6 +107,38 @@ function EditButton({ onClick }) {
   );
 }
 
+function ShareLinkButton({ url }) {
+  const [copied, setCopied] = useState(false);
+  const copy = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const fullUrl = window.location.origin + url;
+    navigator.clipboard.writeText(fullUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <button
+      onClick={copy}
+      title="Copy Shareable Link"
+      style={{
+        width: 32, height: 32, borderRadius: '50%',
+        background: 'rgba(0,0,0,0.3)', color: '#fff',
+        border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'pointer', transition: 'all 0.2s',
+        backdropFilter: 'blur(4px)'
+      }}
+    >
+      {copied ? (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+      ) : (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+      )}
+    </button>
+  );
+}
+
 export default function MessageBubble({ message }) {
   const { activeId, updateMessage } = useChat();
   const isUser = message.role === 'user';
@@ -182,28 +214,37 @@ export default function MessageBubble({ message }) {
             padding: message.attachment.mimeType?.startsWith('image/') ? '8px' : '12px 16px',
             boxShadow: 'var(--shadow-sm)',
             border: isUser ? 'none' : '1px solid var(--border)',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            position: 'relative'
           }}>
             {message.attachment.mimeType?.startsWith('image/') ? (
-              <img 
-                src={message.attachment.url} 
-                alt="Attachment" 
-                style={{ maxWidth: '100%', maxHeight: 250, borderRadius: 10, display: 'block' }} 
-              />
+              <div style={{ position: 'relative' }}>
+                <img 
+                  src={message.attachment.url} 
+                  alt="Attachment" 
+                  style={{ maxWidth: '100%', maxHeight: 250, borderRadius: 10, display: 'block' }} 
+                />
+                <div style={{ position: 'absolute', top: 8, right: 8 }}>
+                  <ShareLinkButton url={message.attachment.url} />
+                </div>
+              </div>
             ) : (
-              <a 
-                href={message.attachment.url} 
-                target="_blank" 
-                rel="noreferrer"
-                style={{ 
-                  display: 'flex', alignItems: 'center', gap: 8, 
-                  color: 'inherit', textDecoration: 'none',
-                  fontWeight: 500
-                }}
-              >
-                <span style={{ fontSize: '1.4rem' }}>📄</span>
-                <span style={{ textDecoration: 'underline' }}>{message.attachment.originalName || 'Attachment'}</span>
-              </a>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <a 
+                  href={message.attachment.url} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  style={{ 
+                    display: 'flex', alignItems: 'center', gap: 10, 
+                    color: 'inherit', textDecoration: 'none',
+                    fontWeight: 500
+                  }}
+                >
+                  <span style={{ fontSize: '1.4rem' }}>📄</span>
+                  <span style={{ textDecoration: 'underline' }}>{message.attachment.originalName || 'Attachment'}</span>
+                </a>
+                <ShareLinkButton url={message.attachment.url} />
+              </div>
             )}
           </div>
         )}

@@ -77,6 +77,26 @@ export default function ChatInput() {
     }
   };
 
+  const handlePaste = (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (file) {
+          setAttachment({
+            file,
+            name: `pasted-image-${Date.now()}.png`,
+            type: 'image',
+            preview: URL.createObjectURL(file)
+          });
+          break;
+        }
+      }
+    }
+  };
+
   return (
     <div style={{ padding: '12px 24px 24px', background: 'var(--bg-surface)', borderTop: '1px solid var(--border)' }}>
       <div style={{ maxWidth: 840, margin: '0 auto' }}>
@@ -214,6 +234,7 @@ export default function ChatInput() {
               value={value}
               onChange={e => setValue(e.target.value)}
               onKeyDown={onKey}
+              onPaste={handlePaste}
               placeholder="Ask anything from here..."
               rows={1}
               disabled={loading || isUploading}
