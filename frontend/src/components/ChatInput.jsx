@@ -98,7 +98,7 @@ export default function ChatInput() {
   };
 
   return (
-    <div style={{ padding: '12px 24px 24px', background: 'var(--bg-surface)', borderTop: '1px solid var(--border)' }}>
+    <div style={{ padding: 'var(--input-padding-y, 12px) var(--input-padding-x, 24px) var(--input-padding-y, 24px)', background: 'var(--bg-surface)', borderTop: '1px solid var(--border)' }}>
       <div style={{ maxWidth: 840, margin: '0 auto' }}>
 
         <div style={{
@@ -106,7 +106,7 @@ export default function ChatInput() {
           background: 'var(--bg-input)',
           border: '1.5px solid var(--border)',
           borderRadius: 20,
-          padding: '14px 18px',
+          padding: 'var(--input-padding, 14px 18px)',
           transition: 'border-color var(--transition)',
           boxShadow: 'var(--shadow-sm)',
         }}
@@ -117,7 +117,7 @@ export default function ChatInput() {
             <button
               onClick={() => setShowMenu(!showMenu)}
               style={{
-                width: 34, height: 34, borderRadius: '50%',
+                width: 'var(--btn-size-sm, 34px)', height: 'var(--btn-size-sm, 34px)', borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: showMenu ? 'var(--bg-hover)' : 'transparent',
                 border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
@@ -183,7 +183,7 @@ export default function ChatInput() {
             <button
               onClick={toggleListening}
               style={{
-                width: 34, height: 34, borderRadius: '50%',
+                width: 'var(--btn-size-sm, 34px)', height: 'var(--btn-size-sm, 34px)', borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: isListening ? 'var(--accent)' : 'transparent',
                 border: 'none', color: isListening ? '#fff' : 'var(--text-muted)', cursor: 'pointer',
@@ -251,7 +251,7 @@ export default function ChatInput() {
             onClick={submit}
             disabled={(!value.trim() && !attachment) || loading || isUploading}
             style={{
-              width: 38, height: 38, borderRadius: 10,
+              width: 'var(--btn-size-sm, 38px)', height: 'var(--btn-size-sm, 38px)', borderRadius: 10,
               background: (value.trim() || attachment) && !(loading || isUploading) ? 'var(--accent)' : 'var(--bg-hover)',
               color: (value.trim() || attachment) && !(loading || isUploading) ? '#fff' : 'var(--text-muted)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',

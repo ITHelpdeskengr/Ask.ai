@@ -153,6 +153,24 @@ a:hover {
   }
 }
 
+/* ── Mobile UI Optimizations ── */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width-closed: 64px;
+    --sidebar-width-open: 240px;
+    --header-height: 52px;
+    --input-padding: 10px 14px;
+    --input-padding-x: 14px;
+    --input-padding-y: 10px;
+    --btn-size-sm: 32px;
+    --btn-size-compact: 36px;
+    --btn-padding-compact: 6px;
+    --bubble-action-size: 28px;
+  }
+
+  .mobile-hide { display: none !important; }
+}
+
 /* Markdown styles inside messages */
 .md-content {
   line-height: 1.7;

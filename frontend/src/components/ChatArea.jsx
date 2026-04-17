@@ -31,7 +31,7 @@ export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onT
       {/* Header */}
       <header style={{
         padding: '0 24px',
-        height: 62,
+        height: 'var(--header-height, 62px)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderBottom: '1px solid var(--border)',
         background: 'var(--header-bg)',
@@ -44,7 +44,7 @@ export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onT
             <button
               onClick={onMenuClick}
               style={{
-                width: 34, height: 34, borderRadius: 8,
+                width: 'var(--btn-size-sm, 34px)', height: 'var(--btn-size-sm, 34px)', borderRadius: 8,
                 background: 'var(--bg-card)', color: 'var(--text-secondary)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all var(--transition)', border: '1px solid var(--border)',
@@ -89,7 +89,7 @@ export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onT
             onClick={toggle}
             title="Toggle theme"
             style={{
-              width: 36, height: 36, borderRadius: 10,
+              width: 'var(--btn-size-sm, 36px)', height: 'var(--btn-size-sm, 36px)', borderRadius: 10,
               background: 'var(--bg-card)', color: 'var(--text-secondary)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               border: '1px solid var(--border)', transition: 'all var(--transition)',
@@ -108,7 +108,7 @@ export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onT
             alignItems: 'center',
           }}>
             <div style={{
-              width: 38, height: 38,
+              width: 'var(--btn-size-sm, 38px)', height: 'var(--btn-size-sm, 38px)',
               borderRadius: 12,
               background: 'var(--accent)',
               border: '1px solid var(--border)',

@@ -74,8 +74,8 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
       )}
 
       <aside style={{
-        width: open ? '260px' : '72px',
-        minWidth: open ? '260px' : '72px',
+        width: open ? 'var(--sidebar-width-open, 260px)' : 'var(--sidebar-width-closed, 72px)',
+        minWidth: open ? 'var(--sidebar-width-open, 260px)' : 'var(--sidebar-width-closed, 72px)',
         height: '100vh',
         background: 'var(--sidebar-bg)',
         borderRight: '1px solid var(--border)',
@@ -90,7 +90,7 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
 
         {/* Logo + Toggle */}
         <div style={{
-          height: 62,
+          height: 'var(--header-height, 62px)',
           padding: open ? '0 18px' : '0',
           display: 'flex',
           alignItems: 'center',
@@ -152,7 +152,8 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
               width: '100%',
               display: 'flex', alignItems: 'center', justifyContent: open ? 'flex-start' : 'center',
               gap: '10px',
-              padding: open ? '10px 12px' : '10px',
+              padding: open ? '10px 12px' : 'var(--btn-padding-compact, 10px)',
+              height: open ? 'auto' : 'var(--btn-size-compact, 40px)',
               borderRadius: 10,
               background: 'var(--accent)',
               color: '#fff',
@@ -191,7 +192,8 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
                 title={a.label}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '8px',
-                  padding: open ? '8px 12px' : '9px',
+                  padding: open ? '8px 12px' : 'var(--btn-padding-compact, 9px)',
+                  height: open ? 'auto' : 'var(--btn-size-compact, 38px)',
                   borderRadius: 10,
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border)',

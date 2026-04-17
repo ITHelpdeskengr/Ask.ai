@@ -68,7 +68,7 @@ function CopyButton({ text }) {
       onClick={copy}
       title="Copy"
       style={{
-        width: 32, height: 32, borderRadius: 8,
+        width: 'var(--bubble-action-size, 32px)', height: 'var(--bubble-action-size, 32px)', borderRadius: 8,
         background: 'var(--bg-card)', color: 'var(--text-muted)',
         border: '1px solid var(--border)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -90,7 +90,7 @@ function EditButton({ onClick }) {
       onClick={onClick}
       title="Edit"
       style={{
-        width: 32, height: 32, borderRadius: 8,
+        width: 'var(--bubble-action-size, 32px)', height: 'var(--bubble-action-size, 32px)', borderRadius: 8,
         background: 'var(--bg-card)', color: 'var(--text-muted)',
         border: '1px solid var(--border)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -123,7 +123,7 @@ function ShareLinkButton({ url }) {
       onClick={copy}
       title="Copy Shareable Link"
       style={{
-        width: 32, height: 32, borderRadius: '50%',
+        width: 'var(--bubble-action-size, 32px)', height: 'var(--bubble-action-size, 32px)', borderRadius: '50%',
         background: 'rgba(0,0,0,0.3)', color: '#fff',
         border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
         cursor: 'pointer', transition: 'all 0.2s',
