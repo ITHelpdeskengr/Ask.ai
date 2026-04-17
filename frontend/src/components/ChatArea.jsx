@@ -135,7 +135,7 @@ export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onT
       {/* Messages / Welcome */}
       <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
         {hasMessages ? (
-          <div style={{ padding: '24px 24px 8px', display: 'flex', flexDirection: 'column', gap: 18, maxWidth: 860, width: '100%', margin: '0 auto' }}>
+          <div className="chat-messages-container" style={{ display: 'flex', flexDirection: 'column', gap: 18, margin: '0 auto' }}>
             {activeSession.messages.map(msg => (
               <MessageBubble key={msg.id} message={msg} />
             ))}

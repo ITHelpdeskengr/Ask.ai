@@ -204,7 +204,7 @@ export default function MessageBubble({ message }) {
         </div>
       )}
 
-      <div style={{ maxWidth: '75%', display: 'flex', flexDirection: 'column', alignItems: isUser ? 'flex-end' : 'flex-start', gap: 4 }}>
+      <div className="message-bubble-container" style={{ display: 'flex', flexDirection: 'column', alignItems: isUser ? 'flex-end' : 'flex-start', gap: 4 }}>
         {/* Attachment bubble */}
         {message.attachment && (
           <div style={{

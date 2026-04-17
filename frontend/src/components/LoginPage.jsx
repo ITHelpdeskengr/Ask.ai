@@ -100,41 +100,22 @@ export default function LoginPage() {
       </button>
 
       {/* Main centered panel */}
-      <div className="login-form-panel" style={{ width: '100%', position: 'relative' }}>
+      <div className="login-form-panel">
         {/* Background ambient glows */}
         <div style={{ position: 'absolute', width: '40vw', height: '40vw', background: 'var(--glow)', borderRadius: '50%', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', filter: 'blur(100px)', opacity: 0.5, pointerEvents: 'none', zIndex: 0 }} />
 
-        <div className="login-card" style={{
-          background: 'var(--bg-card)',
-          padding: '48px 40px',
-          borderRadius: 24,
-          boxShadow: 'var(--shadow-lg)',
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          maxWidth: 440, width: '100%',
-          border: '1px solid var(--border)',
-          position: 'relative', zIndex: 1
-        }}>
+        <div className="login-card">
 
           {/* Logo */}
-          <div style={{
-            width: 56, height: 56,
-            background: 'linear-gradient(135deg, var(--accent) 0%, #ff6b6b 100%)',
-            borderRadius: 16,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            marginBottom: 20,
-            boxShadow: '0 8px 24px rgba(230,57,70,0.3)',
-            animation: 'fadeUp 0.6s ease-out',
-          }}>
+          <div className="login-logo">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
             </svg>
           </div>
 
-          <h1 style={{
-            color: 'var(--text-primary)', fontSize: '1.9rem', fontWeight: 700,
-            letterSpacing: '-0.02em', marginBottom: 6,
-            animation: 'fadeUp 0.6s ease-out 0.1s both',
-          }}>{challengeData ? 'Security Check' : 'Welcome to ASK.ai'}</h1>
+          <h1 style={{ animation: 'fadeUp 0.6s ease-out 0.1s both' }}>
+            {challengeData ? 'Security Check' : 'Welcome to ASK.ai'}
+          </h1>
           <p style={{
             color: 'var(--text-muted)', fontSize: '0.94rem',
             textAlign: 'center', marginBottom: 32,

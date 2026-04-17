@@ -129,6 +129,30 @@ a:hover {
   text-decoration: underline;
 }
 
+/* ── Chat Container Responsive ── */
+.chat-messages-container {
+  padding: 24px 24px 8px;
+  max-width: 860px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .chat-messages-container {
+    padding: 12px 12px 8px;
+  }
+}
+
+/* ── Message Bubble Responsive ── */
+.message-bubble-container {
+  max-width: 75%;
+}
+
+@media (max-width: 768px) {
+  .message-bubble-container {
+    max-width: 90%;
+  }
+}
+
 /* Markdown styles inside messages */
 .md-content {
   line-height: 1.7;
@@ -248,17 +272,50 @@ a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 32px;
+  padding: 40px;
   position: relative;
+  z-index: 1;
 }
 
 .login-card {
+  background: var(--bg-card);
+  padding: 48px 40px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 440px;
   width: 100%;
-  max-width: 400px;
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 2;
   animation: fadeUp 0.5s ease-out;
 }
 
-/* Tablet: ≤ 900px — stack vertically, shrink branding */
+.login-logo {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--accent) 0%, #ff6b6b 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(230,57,70,0.3);
+  animation: fadeUp 0.6s ease-out;
+}
+
+.login-card h1 {
+  color: var(--text-primary);
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* Tablet: ≤ 900px */
 @media (max-width: 900px) {
   .login-wrapper {
     flex-direction: column;
@@ -274,34 +331,40 @@ a:hover {
     font-size: 1.8rem !important;
   }
 
-  .login-branding p {
-    font-size: 0.92rem !important;
-  }
-
   .login-form-panel {
-    flex: 1;
     padding: 32px 24px;
   }
 }
 
-/* Mobile: ≤ 600px — hide branding, full-screen form */
+/* Mobile: ≤ 600px */
 @media (max-width: 600px) {
   .login-branding {
     display: none;
   }
 
   .login-form-panel {
-    padding: 24px 18px;
-    justify-content: flex-start;
-    padding-top: 80px;
+    padding: 20px 16px;
+    justify-content: center; /* Centered visually */
   }
 
   .login-card {
+    padding: 32px 24px;
+    border-radius: 20px;
     max-width: 100%;
   }
 
-  .login-card h2 {
-    font-size: 1.35rem !important;
+  .login-logo {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  .login-card h1 {
+    font-size: 1.5rem;
+  }
+  
+  .login-card p {
+    font-size: 0.88rem !important;
   }
 }
 
