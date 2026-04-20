@@ -35,7 +35,7 @@ const QUICK_ACTIONS = [
 ];
 
 
-export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onSwitchToAdmin }) {
+export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isAdmin, onSwitchToAdmin, isMobile }) {
   const { sessions, activeId, setActiveId, newSession, deleteSession, sendMessage } = useChat();
   const { theme, toggle } = useTheme();
   const { user, logout } = useAuth();
@@ -57,45 +57,61 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
 
+  // On mobile, sidebar is always "expanded" when visible (no collapsed icon mode)
+  const effectiveOpen = isMobile ? true : open;
+
   return (
     <>
-      {/* Overlay for mobile */}
-      {open && (
+      {/* Dark overlay backdrop for mobile */}
+      {isMobile && open && (
         <div
-          onClick={onToggle}
+          onClick={onClose}
           style={{
-            display: 'none',
-            position: 'fixed', inset: 0,
-            background: 'rgba(0,0,0,0.5)',
-            zIndex: 40,
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.55)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 98,
+            animation: 'fadeIn 0.2s ease-out',
           }}
-          className="mobile-overlay"
         />
       )}
 
       <aside style={{
-        width: open ? 'var(--sidebar-width-open, 260px)' : 'var(--sidebar-width-closed, 72px)',
-        minWidth: open ? 'var(--sidebar-width-open, 260px)' : 'var(--sidebar-width-closed, 72px)',
-        height: '100vh',
+        ...(isMobile ? {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          height: '100vh',
+          width: '280px',
+          transform: open ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+          zIndex: 99,
+          boxShadow: open ? '4px 0 24px rgba(0,0,0,0.3)' : 'none',
+        } : {
+          width: effectiveOpen ? 'var(--sidebar-width-open, 260px)' : 'var(--sidebar-width-closed, 72px)',
+          minWidth: effectiveOpen ? 'var(--sidebar-width-open, 260px)' : 'var(--sidebar-width-closed, 72px)',
+          height: '100vh',
+          position: 'relative',
+          zIndex: 50,
+          transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1)',
+        }),
         background: 'var(--sidebar-bg)',
         borderRight: '1px solid var(--border)',
         display: 'flex',
         flexDirection: 'column',
-        transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1)',
         overflow: 'hidden',
-        position: 'relative',
-        zIndex: 50,
         flexShrink: 0,
       }}>
 
         {/* Logo + Toggle */}
         <div style={{
           height: 'var(--header-height, 62px)',
-          padding: open ? '0 18px' : '0',
+          padding: effectiveOpen ? '0 18px' : '0',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
-          justifyContent: open ? 'space-between' : 'center',
+          justifyContent: effectiveOpen ? 'space-between' : 'center',
           borderBottom: '1px solid var(--border)',
           flexShrink: 0,
         }}>
@@ -112,16 +128,16 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
               </svg>
             </div>
-            {open && (
+            {effectiveOpen && (
               <div style={{ overflow: 'hidden' }}>
                 <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>ASK.ai</div>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>AI Assistant</div>
               </div>
             )}
           </div>
-          {open && (
+          {effectiveOpen && (
             <button
-              onClick={onToggle}
+              onClick={isMobile ? onClose : onToggle}
               style={{
                 width: 28, height: 28, borderRadius: 8,
                 background: 'transparent', color: 'var(--text-muted)',
@@ -144,16 +160,16 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
 
 
         {/* New Chat Button */}
-        <div style={{ padding: open ? '0 10px 10px' : '0 10px 10px' }}>
+        <div style={{ padding: effectiveOpen ? '0 10px 10px' : '0 10px 10px' }}>
           <button
-            onClick={newSession}
-            title={!open ? 'New Chat' : undefined}
+            onClick={() => { newSession(); if (isMobile) onClose(); }}
+            title={!effectiveOpen ? 'New Chat' : undefined}
             style={{
               width: '100%',
-              display: 'flex', alignItems: 'center', justifyContent: open ? 'flex-start' : 'center',
+              display: 'flex', alignItems: 'center', justifyContent: effectiveOpen ? 'flex-start' : 'center',
               gap: '10px',
-              padding: open ? '10px 12px' : 'var(--btn-padding-compact, 10px)',
-              height: open ? 'auto' : 'var(--btn-size-compact, 40px)',
+              padding: effectiveOpen ? '10px 12px' : 'var(--btn-padding-compact, 10px)',
+              height: effectiveOpen ? 'auto' : 'var(--btn-size-compact, 40px)',
               borderRadius: 10,
               background: 'var(--accent)',
               color: '#fff',
@@ -166,13 +182,13 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
             onMouseLeave={e => e.currentTarget.style.opacity = '1'}
           >
             <IconPlus />
-            {open && <span>New Chat</span>}
+            {effectiveOpen && <span>New Chat</span>}
           </button>
         </div>
 
         {/* Quick Actions Section */}
         <div style={{ padding: '0 10px 14px' }}>
-          {open && (
+          {effectiveOpen && (
             <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', padding: '0 4px 6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               Quick Tools
             </div>
@@ -187,13 +203,14 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
                   else if (a.isCreateMeeting) setShowMeetingModal(true);
                   else if (a.isViewTasks) setShowTaskDashboard(true);
                   else sendMessage(a.prompt, null, getTargetSessionId());
+                  if (isMobile) onClose();
                 }}
                 disabled={(a.isEmail && isFetchingGmail) || (a.isCalendar && isFetchingCalendar)}
                 title={a.label}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '8px',
-                  padding: open ? '8px 12px' : 'var(--btn-padding-compact, 9px)',
-                  height: open ? 'auto' : 'var(--btn-size-compact, 38px)',
+                  padding: effectiveOpen ? '8px 12px' : 'var(--btn-padding-compact, 9px)',
+                  height: effectiveOpen ? 'auto' : 'var(--btn-size-compact, 38px)',
                   borderRadius: 10,
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border)',
@@ -202,7 +219,7 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
                   fontWeight: 500,
                   transition: 'all var(--transition)',
                   flexShrink: 0,
-                  justifyContent: open ? 'flex-start' : 'center',
+                  justifyContent: effectiveOpen ? 'flex-start' : 'center',
                   opacity: ((a.isEmail && isFetchingGmail) || (a.isCalendar && isFetchingCalendar)) ? 0.6 : 1,
                   cursor: ((a.isEmail && isFetchingGmail) || (a.isCalendar && isFetchingCalendar)) ? 'wait' : 'pointer',
                 }}
@@ -226,7 +243,7 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
                     <div style={{ width: 16, height: 16, border: '2px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />
                   ) : a.icon}
                 </span>
-                {open && <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {effectiveOpen && <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {((a.isEmail && isFetchingGmail) || (a.isCalendar && isFetchingCalendar)) ? 'Working...' : a.label}
                 </span>}
               </button>
@@ -235,7 +252,7 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
         </div>
 
         {/* Conversation List */}
-        {open && (
+        {effectiveOpen && (
           <div style={{
             flex: 1, overflowY: 'auto', padding: '0 10px',
             display: 'flex', flexDirection: 'column', gap: '3px',
@@ -263,7 +280,7 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
                   setHoveredSession(null);
                   if (session.id !== activeId) e.currentTarget.style.background = 'transparent';
                 }}
-                onClick={() => setActiveId(session.id)}
+                onClick={() => { setActiveId(session.id); if (isMobile) onClose(); }}
               >
                 <div style={{
                   width: 7, height: 7, borderRadius: '50%',
@@ -332,18 +349,18 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
           </div>
         )}
 
-        {!open && <div style={{ flex: 1 }} />}
+        {!effectiveOpen && <div style={{ flex: 1 }} />}
 
         {/* Bottom: User info + Theme toggle + Logout */}
         <div style={{
-          padding: open ? '12px 14px' : '12px 10px',
+          padding: effectiveOpen ? '12px 14px' : '12px 10px',
           borderTop: '1px solid var(--border)',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          justifyContent: open ? 'space-between' : 'center',
+          justifyContent: effectiveOpen ? 'space-between' : 'center',
         }}>
-          {open && user && (
+          {effectiveOpen && user && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '9px', overflow: 'hidden', flex: 1 }}>
               {user.avatar ? (
                 <img src={user.avatar} alt="" style={{
@@ -369,7 +386,7 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
           <div style={{
             display: 'flex',
             flexDirection: 'row',
-            gap: open ? 8 : 4,
+            gap: effectiveOpen ? 8 : 4,
             flexShrink: 0,
             alignItems: 'center',
             justifyContent: 'center'
@@ -378,7 +395,7 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
               onClick={toggle}
               title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
               style={{
-                width: open ? 34 : 28, height: open ? 34 : 28, borderRadius: 8,
+                width: effectiveOpen ? 34 : 28, height: effectiveOpen ? 34 : 28, borderRadius: 8,
                 background: 'var(--bg-card)',
                 color: 'var(--text-secondary)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -397,7 +414,7 @@ export default function Sidebar({ open, onToggle, onOpenFilesPanel, isAdmin, onS
               onClick={() => setShowLogoutConfirm(true)}
               title="Sign out"
               style={{
-                width: open ? 34 : 28, height: open ? 34 : 28, borderRadius: 8,
+                width: effectiveOpen ? 34 : 28, height: effectiveOpen ? 34 : 28, borderRadius: 8,
                 background: 'var(--bg-card)',
                 color: 'var(--text-secondary)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',

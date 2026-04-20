@@ -386,12 +386,7 @@ a:hover {
   }
 }
 
-/* Mobile overlay for sidebar */
-@media (max-width: 768px) {
-  .mobile-overlay {
-    display: block !important;
-  }
-}
+
 
 @keyframes fadeUp {
   from {

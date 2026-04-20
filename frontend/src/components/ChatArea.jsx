@@ -7,13 +7,16 @@ import TypingIndicator from './TypingIndicator';
 import WelcomeScreen from './WelcomeScreen';
 import ChatInput from './ChatInput';
 
-export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onToggleFilesPanel }) {
+export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onToggleFilesPanel, isMobile }) {
   const { activeSession, loading, newSession } = useChat();
 
   const uploadCount = (activeSession?.messages || []).filter(m => m.attachment).length;
   const { theme, toggle } = useTheme();
   const { user } = useAuth();
   const bottomRef = useRef(null);
+
+  // On mobile, always show the hamburger since sidebar is an overlay
+  const showMenuButton = isMobile || !sidebarOpen;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,7 +43,7 @@ export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onT
         zIndex: 10,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {!sidebarOpen && (
+          {showMenuButton && (
             <button
               onClick={onMenuClick}
               style={{
