@@ -471,6 +471,7 @@ function ProfileTab({ currentUser, users, updateProfile }) {
     background: 'var(--bg-input)', border: '1.5px solid var(--border)',
     borderRadius: 12, padding: '0 12px',
     transition: 'border-color 0.2s',
+    overflow: 'hidden',
   });
 
   const handleSave = async () => {
