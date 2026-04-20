@@ -10,7 +10,7 @@ import PublicCalendar from './components/PublicCalendar';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 import { UIProvider } from './context/UIContext';
-import VoiceFloatingButton from './components/VoiceFloatingButton';
+
 
 import AdminDashboard from './components/AdminDashboard';
 import { useState, useEffect } from 'react';
@@ -39,7 +39,6 @@ function AppContent() {
         ) : (
           <>
             <Layout />
-            <VoiceFloatingButton />
           </>
         )}
       </UIProvider>
