@@ -289,7 +289,7 @@ export default function AdminDashboard() {
             ))}
             
             {/* Sidebar Bottom Action */}
-            <button onClick={() => setShowSignoutModal(true)} style={{
+            <button className="admin-signout-btn" onClick={() => setShowSignoutModal(true)} style={{
               marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
               borderRadius: 12, border: 'none', background: 'transparent',
               color: '#e63946', fontWeight: 600, fontSize: '0.95rem',
@@ -300,7 +300,7 @@ export default function AdminDashboard() {
                 <polyline points="16 17 21 12 16 7"></polyline>
                 <line x1="21" y1="12" x2="9" y2="12"></line>
               </svg>
-              Sign Out
+              <span>Sign Out</span>
             </button>
           </div>
 
@@ -334,6 +334,7 @@ export default function AdminDashboard() {
             overflow-x: auto; 
             padding: 8px 12px !important;
             gap: 4px;
+            align-items: center;
           }
           .admin-sidebar button { 
             white-space: nowrap; 
@@ -342,6 +343,10 @@ export default function AdminDashboard() {
             padding: 10px 14px !important;
             font-size: 0.85rem !important;
             flex-shrink: 0;
+          }
+          .admin-signout-btn {
+            margin-top: 0 !important;
+            margin-left: auto !important;
           }
           .admin-sidebar::-webkit-scrollbar { height: 4px; }
           .table-container { padding: 12px !important; }
