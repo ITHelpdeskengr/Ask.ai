@@ -373,6 +373,11 @@ export default function LoginPage() {
                   Continue with Google
                 </button>
               </div>
+
+              {/* Privacy Policy Link for Google Verification */}
+              <div style={{ marginTop: 24, textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                By logging in, you agree to our <a href="/privacy" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Privacy Policy</a>
+              </div>
             </>
           )}
         </div>
