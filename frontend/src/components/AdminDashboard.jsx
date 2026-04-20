@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 
+const MOBILE_BREAKPOINT = 768;
+
 export default function AdminDashboard() {
   const { user: currentUser, logout, updateProfile } = useAuth();
   
@@ -21,6 +23,20 @@ export default function AdminDashboard() {
   // Theme support
   const [theme, setTheme] = useState(document.documentElement.getAttribute('data-theme') || localStorage.getItem('theme') || 'dark');
   const [showSignoutModal, setShowSignoutModal] = useState(false);
+
+  // Mobile sidebar toggle
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= MOBILE_BREAKPOINT);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const onResize = () => {
+      const mobile = window.innerWidth <= MOBILE_BREAKPOINT;
+      setIsMobile(mobile);
+      if (mobile) setSidebarOpen(false);
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -240,6 +256,11 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+    if (isMobile) setSidebarOpen(false);
+  };
+
   return (
     <div style={{
       display: 'flex', flexDirection: 'column',
@@ -247,14 +268,32 @@ export default function AdminDashboard() {
       background: 'var(--bg-base)',
       overflow: 'hidden'
     }}>
+        {/* Header */}
         <div className="admin-header" style={{
           padding: '16px 20px', borderBottom: '1px solid var(--border)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           background: 'linear-gradient(to right, var(--bg-hover), transparent)', flexShrink: 0,
-          gap: 12, flexWrap: 'wrap',
+          gap: 12,
         }}>
-          <div style={{ minWidth: 0 }}>
-            <h2 style={{ margin: 0, fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+            {/* Hamburger menu for mobile */}
+            {isMobile && (
+              <button
+                onClick={() => setSidebarOpen(o => !o)}
+                style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: 'var(--bg-card)', color: 'var(--text-secondary)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: '1px solid var(--border)', cursor: 'pointer', flexShrink: 0,
+                  transition: 'all 0.2s',
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              </button>
+            )}
+            <h2 style={{ margin: 0, fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
               <span style={{ fontSize: 'clamp(1.3rem, 4vw, 1.8rem)', flexShrink: 0 }}>🛡️</span> Admin Command Center
             </h2>
           </div>
@@ -269,13 +308,74 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="admin-layout" style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        <div className="admin-layout" style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative' }}>
+
+          {/* Mobile backdrop overlay */}
+          {isMobile && sidebarOpen && (
+            <div
+              onClick={() => setSidebarOpen(false)}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                background: 'rgba(0,0,0,0.55)',
+                backdropFilter: 'blur(4px)',
+                zIndex: 98,
+                animation: 'fadeIn 0.2s ease-out',
+              }}
+            />
+          )}
+
           {/* Navigation Sidebar */}
-          <div className="admin-sidebar" style={{ width: 260, borderRight: '1px solid var(--border)', background: 'var(--bg-surface)', display: 'flex', flexDirection: 'column', padding: '16px 12px' }}>
+          <div className="admin-sidebar" style={{
+            ...(isMobile ? {
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              height: '100vh',
+              width: '280px',
+              transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+              transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+              zIndex: 99,
+              boxShadow: sidebarOpen ? '4px 0 24px rgba(0,0,0,0.3)' : 'none',
+            } : {
+              width: 260,
+              borderRight: '1px solid var(--border)',
+            }),
+            background: 'var(--sidebar-bg, var(--bg-surface))',
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '16px 12px',
+          }}>
+            {/* Mobile sidebar header */}
+            {isMobile && (
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '4px 4px 16px', marginBottom: 8, borderBottom: '1px solid var(--border)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: '1.3rem' }}>🛡️</span>
+                  <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem' }}>Admin Menu</span>
+                </div>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  style={{
+                    width: 28, height: 28, borderRadius: 8,
+                    background: 'transparent', color: 'var(--text-muted)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    border: 'none', cursor: 'pointer',
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            )}
+
             {tabs.map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabClick(tab.id)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
                   borderRadius: 12, border: 'none', background: activeTab === tab.id ? 'var(--bg-hover)' : 'transparent',
@@ -289,7 +389,7 @@ export default function AdminDashboard() {
             ))}
             
             {/* Sidebar Bottom Action */}
-            <button className="admin-signout-btn" onClick={() => setShowSignoutModal(true)} style={{
+            <button className="admin-signout-btn" onClick={() => { setShowSignoutModal(true); if (isMobile) setSidebarOpen(false); }} style={{
               marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
               borderRadius: 12, border: 'none', background: 'transparent',
               color: '#e63946', fontWeight: 600, fontSize: '0.95rem',
@@ -325,30 +425,6 @@ export default function AdminDashboard() {
           .admin-header {
             padding: 14px 16px !important;
           }
-          .admin-layout { flex-direction: column !important; }
-          .admin-sidebar { 
-            width: 100% !important; 
-            border-right: none !important; 
-            border-bottom: 1px solid var(--border) !important; 
-            flex-direction: row !important; 
-            overflow-x: auto; 
-            padding: 8px 12px !important;
-            gap: 4px;
-            align-items: center;
-          }
-          .admin-sidebar button { 
-            white-space: nowrap; 
-            margin-bottom: 0 !important; 
-            margin-right: 4px;
-            padding: 10px 14px !important;
-            font-size: 0.85rem !important;
-            flex-shrink: 0;
-          }
-          .admin-signout-btn {
-            margin-top: 0 !important;
-            margin-left: auto !important;
-          }
-          .admin-sidebar::-webkit-scrollbar { height: 4px; }
           .table-container { padding: 12px !important; }
           
           .workspaces-layout { flex-direction: column !important; }
