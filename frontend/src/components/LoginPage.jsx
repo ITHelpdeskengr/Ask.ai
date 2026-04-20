@@ -255,6 +255,7 @@ export default function LoginPage() {
                     background: 'var(--bg-input)', border: '1.5px solid var(--border)',
                     borderRadius: 12, padding: '0 14px',
                     transition: 'border-color var(--transition)',
+                    overflow: 'hidden',
                   }}
                     onFocusCapture={e => e.currentTarget.style.borderColor = 'var(--accent)'}
                     onBlurCapture={e => e.currentTarget.style.borderColor = 'var(--border)'}

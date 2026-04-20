@@ -356,6 +356,10 @@ a:hover {
 
 /* Mobile: ≤ 600px */
 @media (max-width: 600px) {
+  .login-wrapper {
+    overflow-x: hidden;
+  }
+
   .login-branding {
     display: none;
   }
@@ -369,6 +373,7 @@ a:hover {
     padding: 32px 24px;
     border-radius: 20px;
     max-width: 100%;
+    overflow: hidden;
   }
 
   .login-logo {

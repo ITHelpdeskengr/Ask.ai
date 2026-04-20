@@ -247,17 +247,18 @@ export default function AdminDashboard() {
       background: 'var(--bg-base)',
       overflow: 'hidden'
     }}>
-        <div style={{
-          padding: '24px 30px', borderBottom: '1px solid var(--border)',
+        <div className="admin-header" style={{
+          padding: '16px 20px', borderBottom: '1px solid var(--border)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: 'linear-gradient(to right, var(--bg-hover), transparent)', flexShrink: 0
+          background: 'linear-gradient(to right, var(--bg-hover), transparent)', flexShrink: 0,
+          gap: 12, flexWrap: 'wrap',
         }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontSize: '1.8rem' }}>🛡️</span> Admin Command Center
+          <div style={{ minWidth: 0 }}>
+            <h2 style={{ margin: 0, fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: 'clamp(1.3rem, 4vw, 1.8rem)', flexShrink: 0 }}>🛡️</span> Admin Command Center
             </h2>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
             <button onClick={toggleTheme} style={{
               background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-primary)',
               padding: '8px 12px', borderRadius: '12px', cursor: 'pointer', fontSize: '1.1rem',
@@ -321,6 +322,9 @@ export default function AdminDashboard() {
         @keyframes spin { to { transform: rotate(360deg); } }
         
         @media (max-width: 768px) {
+          .admin-header {
+            padding: 14px 16px !important;
+          }
           .admin-layout { flex-direction: column !important; }
           .admin-sidebar { 
             width: 100% !important; 
@@ -328,12 +332,16 @@ export default function AdminDashboard() {
             border-bottom: 1px solid var(--border) !important; 
             flex-direction: row !important; 
             overflow-x: auto; 
-            padding: 12px !important; 
+            padding: 8px 12px !important;
+            gap: 4px;
           }
           .admin-sidebar button { 
             white-space: nowrap; 
             margin-bottom: 0 !important; 
-            margin-right: 8px; 
+            margin-right: 4px;
+            padding: 10px 14px !important;
+            font-size: 0.85rem !important;
+            flex-shrink: 0;
           }
           .admin-sidebar::-webkit-scrollbar { height: 4px; }
           .table-container { padding: 12px !important; }
@@ -358,6 +366,20 @@ export default function AdminDashboard() {
           }
           .workspace-user-item.active {
             border-top: 4px solid var(--accent) !important;
+          }
+          .admin-knowledge-sync-row {
+            flex-direction: column !important;
+          }
+          .admin-knowledge-sync-row input {
+            width: 100% !important;
+          }
+          .admin-knowledge-sync-row button {
+            width: 100% !important;
+            padding: 12px !important;
+            justify-content: center !important;
+          }
+          .admin-profile-card {
+            padding: 24px 16px !important;
           }
         }
       `}</style>
@@ -480,10 +502,10 @@ function ProfileTab({ currentUser, users, updateProfile }) {
   );
 
   return (
-    <div style={{ padding: 40, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-      <div style={{
+    <div style={{ padding: 'clamp(16px, 4vw, 40px)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+      <div className="admin-profile-card" style={{
         background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: 24, padding: 40, width: '100%', maxWidth: 800, margin: '0 auto',
+        borderRadius: 24, padding: 'clamp(20px, 4vw, 40px)', width: '100%', maxWidth: 800, margin: '0 auto',
         boxShadow: '0 12px 48px rgba(0,0,0,0.12)',
       }}>
 
@@ -798,7 +820,7 @@ function KnowledgeBaseTab() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 30 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 'clamp(16px, 4vw, 30px)' }}>
       {/* Header */}
       <h3 style={{ marginTop: 0, color: 'var(--text-primary)', marginBottom: 8 }}>Knowledge Base 🧠</h3>
       <p style={{ margin: '0 0 24px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
@@ -808,7 +830,7 @@ function KnowledgeBaseTab() {
       {/* ── Personal Google Drive Sync ── */}
       <div style={{
         background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16,
-        padding: '24px 30px', marginBottom: 16,
+        padding: 'clamp(16px, 3vw, 30px)', marginBottom: 16,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
           <div style={{ width: 40, height: 40, background: 'rgba(46,196,182,0.12)', color: '#2ec4b6', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem' }}>
@@ -845,7 +867,7 @@ function KnowledgeBaseTab() {
           </div>
         ) : (
           <>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'stretch', marginBottom: personalSyncMsg ? 12 : 0 }}>
+            <div className="admin-knowledge-sync-row" style={{ display: 'flex', gap: 12, alignItems: 'stretch', marginBottom: personalSyncMsg ? 12 : 0 }}>
               <input
                 type="text"
                 placeholder="Paste Google Drive Folder ID (from folder URL)"
@@ -903,7 +925,7 @@ function KnowledgeBaseTab() {
             <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>⚙️ Service Account Sync</span>
             <span style={{ fontSize: '0.7rem', background: 'rgba(29,108,232,0.1)', color: 'var(--accent-blue)', padding: '2px 8px', borderRadius: 99, fontWeight: 700 }}>CONFIGURED</span>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div className="admin-knowledge-sync-row" style={{ display: 'flex', gap: 10 }}>
             <input
               type="text"
               placeholder="Service Account Folder ID"
