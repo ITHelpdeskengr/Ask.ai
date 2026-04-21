@@ -83,7 +83,7 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
           top: 0,
           left: 0,
           height: '100vh',
-          width: '280px',
+          width: 'min(240px, 75vw)',
           transform: open ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
           zIndex: 99,
@@ -110,14 +110,14 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
           padding: effectiveOpen ? '0 18px' : '0',
           display: 'flex',
           alignItems: 'center',
-          gap: '12px',
+          gap: isMobile ? '8px' : '12px',
           justifyContent: effectiveOpen ? 'space-between' : 'center',
           borderBottom: '1px solid var(--border)',
           flexShrink: 0,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', overflow: 'hidden' }}>
             <div style={{
-              width: 36, height: 36,
+              width: isMobile ? 28 : 36, height: isMobile ? 28 : 36,
               background: 'var(--accent)',
               borderRadius: 10,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -130,8 +130,8 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
             </div>
             {effectiveOpen && (
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>ASK.ai</div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>AI Assistant</div>
+                <div style={{ fontWeight: 700, fontSize: isMobile ? '0.88rem' : '1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>ASK.ai</div>
+                <div style={{ fontSize: isMobile ? '0.62rem' : '0.7rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>AI Assistant</div>
               </div>
             )}
           </div>
@@ -160,21 +160,21 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
 
 
         {/* New Chat Button */}
-        <div style={{ padding: effectiveOpen ? '0 10px 10px' : '0 10px 10px' }}>
+        <div style={{ padding: effectiveOpen ? '0 8px 8px' : '0 8px 8px' }}>
           <button
             onClick={() => { newSession(); if (isMobile) onClose(); }}
             title={!effectiveOpen ? 'New Chat' : undefined}
             style={{
               width: '100%',
               display: 'flex', alignItems: 'center', justifyContent: effectiveOpen ? 'flex-start' : 'center',
-              gap: '10px',
-              padding: effectiveOpen ? '10px 12px' : 'var(--btn-padding-compact, 10px)',
+              gap: isMobile ? '6px' : '10px',
+              padding: effectiveOpen ? (isMobile ? '8px 10px' : '10px 12px') : 'var(--btn-padding-compact, 10px)',
               height: effectiveOpen ? 'auto' : 'var(--btn-size-compact, 40px)',
               borderRadius: 10,
               background: 'var(--accent)',
               color: '#fff',
               fontWeight: 600,
-              fontSize: '0.88rem',
+              fontSize: isMobile ? '0.8rem' : '0.88rem',
               transition: 'all var(--transition)',
               boxShadow: '0 2px 12px var(--glow)',
             }}
@@ -187,13 +187,13 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
         </div>
 
         {/* Quick Actions Section */}
-        <div style={{ padding: '0 10px 14px' }}>
+        <div style={{ padding: '0 8px 10px' }}>
           {effectiveOpen && (
-            <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', padding: '0 4px 6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <div style={{ fontSize: isMobile ? '0.65rem' : '0.72rem', fontWeight: 600, color: 'var(--text-muted)', padding: '0 4px 4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               Quick Tools
             </div>
           )}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '4px' : '6px' }}>
             {QUICK_ACTIONS.map((a, i) => (
               <button
                 key={i}
@@ -209,13 +209,13 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
                 title={a.label}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '8px',
-                  padding: effectiveOpen ? '8px 12px' : 'var(--btn-padding-compact, 9px)',
+                  padding: effectiveOpen ? (isMobile ? '6px 8px' : '8px 12px') : 'var(--btn-padding-compact, 9px)',
                   height: effectiveOpen ? 'auto' : 'var(--btn-size-compact, 38px)',
-                  borderRadius: 10,
+                  borderRadius: isMobile ? 8 : 10,
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border)',
                   color: 'var(--text-secondary)',
-                  fontSize: '0.8rem',
+                  fontSize: isMobile ? '0.72rem' : '0.8rem',
                   fontWeight: 500,
                   transition: 'all var(--transition)',
                   flexShrink: 0,
@@ -257,16 +257,16 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
             flex: 1, overflowY: 'auto', padding: '0 10px',
             display: 'flex', flexDirection: 'column', gap: '3px',
           }}>
-            <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', padding: '6px 4px 4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <div style={{ fontSize: isMobile ? '0.65rem' : '0.72rem', fontWeight: 600, color: 'var(--text-muted)', padding: '6px 4px 4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               Recent
             </div>
             {sessions.filter(s => s.messages && s.messages.length > 0).map(session => (
               <div
                 key={session.id}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: '8px',
-                  padding: '9px 10px',
-                  borderRadius: 10,
+                  display: 'flex', alignItems: 'center', gap: isMobile ? '6px' : '8px',
+                  padding: isMobile ? '7px 8px' : '9px 10px',
+                  borderRadius: isMobile ? 8 : 10,
                   background: session.id === activeId ? 'var(--bg-hover)' : 'transparent',
                   cursor: 'pointer',
                   transition: 'all var(--transition)',
@@ -289,13 +289,13 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
                 }} />
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <div style={{
-                    fontSize: '0.84rem', fontWeight: session.id === activeId ? 600 : 400,
+                    fontSize: isMobile ? '0.76rem' : '0.84rem', fontWeight: session.id === activeId ? 600 : 400,
                     color: session.id === activeId ? 'var(--text-primary)' : 'var(--text-secondary)',
                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                   }}>
                     {session.title}
                   </div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: isMobile ? '0.62rem' : '0.7rem', color: 'var(--text-muted)' }}>
                     {formatDistanceToNow(new Date(session.createdAt), { addSuffix: true })}
                   </div>
                 </div>
@@ -353,33 +353,33 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
 
         {/* Bottom: User info + Theme toggle + Logout */}
         <div style={{
-          padding: effectiveOpen ? '12px 14px' : '12px 10px',
+          padding: effectiveOpen ? (isMobile ? '8px 10px' : '12px 14px') : (isMobile ? '8px 6px' : '12px 10px'),
           borderTop: '1px solid var(--border)',
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
+          gap: isMobile ? '6px' : '10px',
           justifyContent: effectiveOpen ? 'space-between' : 'center',
         }}>
           {effectiveOpen && user && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '9px', overflow: 'hidden', flex: 1 }}>
               {user.avatar ? (
                 <img src={user.avatar} alt="" style={{
-                  width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                  width: isMobile ? 26 : 32, height: isMobile ? 26 : 32, borderRadius: '50%', flexShrink: 0,
                   border: '2px solid var(--accent)',
                 }} />
               ) : (
                 <div style={{
-                  width: 32, height: 32, borderRadius: '50%',
+                  width: isMobile ? 26 : 32, height: isMobile ? 26 : 32, borderRadius: '50%',
                   background: 'linear-gradient(135deg, var(--accent), #ff6b6b)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '0.8rem', fontWeight: 700, color: '#fff', flexShrink: 0,
+                  fontSize: isMobile ? '0.68rem' : '0.8rem', fontWeight: 700, color: '#fff', flexShrink: 0,
                 }}>
                   {user.name?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
               )}
               <div style={{ overflow: 'hidden', flex: 1 }}>
-                <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.name}</div>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
+                <div style={{ fontSize: isMobile ? '0.76rem' : '0.84rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.name}</div>
+                <div style={{ fontSize: isMobile ? '0.58rem' : '0.68rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
               </div>
             </div>
           )}

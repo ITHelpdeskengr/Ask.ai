@@ -99,27 +99,27 @@ export default function TaskDashboard({ onClose }) {
       position: 'fixed', inset: 0,
       background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      zIndex: 2000, padding: '20px'
+      zIndex: 2000, padding: 'clamp(8px, 2vw, 20px)'
     }}>
       <div style={{
-        width: '95%', maxWidth: '850px', height: '90vh',
+        width: '95%', maxWidth: '850px', height: 'clamp(80vh, 90vh, 90vh)',
         background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: '24px', display: 'flex', flexDirection: 'column',
+        borderRadius: 'clamp(14px, 3vw, 24px)', display: 'flex', flexDirection: 'column',
         overflow: 'hidden', boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
         animation: 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
       }}>
         {/* Header */}
         <div className="dash-header" style={{
-          padding: '24px 32px', borderBottom: '1px solid var(--border)',
+          padding: 'clamp(12px, 3vw, 24px) clamp(14px, 3vw, 32px)', borderBottom: '1px solid var(--border)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           background: 'linear-gradient(to right, var(--bg-hover), transparent)',
           flexWrap: 'wrap', gap: '16px'
         }}>
           <div style={{ flex: 1 }}>
-            <h2 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '1.8rem' }}>📝</span> My Tasks
+            <h2 style={{ margin: 0, fontSize: 'clamp(1rem, 3.5vw, 1.5rem)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 'clamp(6px, 2vw, 12px)' }}>
+              <span style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.8rem)' }}>📝</span> My Tasks
             </h2>
-            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Keep track of your to-dos</p>
+            <p style={{ margin: '4px 0 0', fontSize: 'clamp(0.72rem, 2vw, 0.85rem)', color: 'var(--text-muted)' }}>Keep track of your to-dos</p>
           </div>
           
           <div style={{ display: 'flex', background: 'var(--bg-hover)', padding: '4px', borderRadius: '12px', gap: '4px' }}>
@@ -146,10 +146,10 @@ export default function TaskDashboard({ onClose }) {
 
         {/* Quick Add Bar */}
         <div className="quick-add-bar" style={{
-          padding: '16px 24px', borderBottom: '1px solid var(--border)',
-          background: 'var(--bg-card)', display: 'flex', gap: '12px', alignItems: 'center'
+          padding: 'clamp(10px, 2vw, 16px) clamp(12px, 3vw, 24px)', borderBottom: '1px solid var(--border)',
+          background: 'var(--bg-card)', display: 'flex', gap: 'clamp(8px, 2vw, 12px)', alignItems: 'center'
         }}>
-          <form onSubmit={addTask} className="quick-add-form" style={{ display: 'flex', flex: 1, gap: '12px', alignItems: 'center' }}>
+          <form onSubmit={addTask} className="quick-add-form" style={{ display: 'flex', flex: 1, gap: 'clamp(6px, 1.5vw, 12px)', alignItems: 'center', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, position: 'relative' }}>
               <input 
                 type="text"
@@ -209,7 +209,7 @@ export default function TaskDashboard({ onClose }) {
         </div>
 
         {/* Content */}
-        <div className="dash-content" style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+        <div className="dash-content" style={{ flex: 1, overflowY: 'auto', padding: 'clamp(12px, 3vw, 24px)' }}>
           {loading ? (
             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px' }}>
                <div className="dash-spinner"></div>

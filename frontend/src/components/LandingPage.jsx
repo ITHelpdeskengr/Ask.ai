@@ -230,9 +230,9 @@ export default function LandingPage() {
             padding: 56px 5% 44px;
           }
           .lp-hero h1 {
-            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            font-size: clamp(1.6rem, 8vw, 2.8rem);
             letter-spacing: -1px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
           }
           .lp-hero-desc {
             font-size: 0.95rem;
@@ -285,7 +285,7 @@ export default function LandingPage() {
             gap: 8px;
           }
           .lp-nav-logo {
-            width: 26px; height: 26px;
+            width: clamp(22px, 6vw, 26px); height: clamp(22px, 6vw, 26px);
             border-radius: 7px;
           }
           .lp-nav-logo svg {
@@ -310,9 +310,9 @@ export default function LandingPage() {
             padding: 40px 4% 32px;
           }
           .lp-hero h1 {
-            font-size: clamp(1.5rem, 6vw, 2rem);
-            letter-spacing: -0.8px;
-            margin-bottom: 12px;
+            font-size: clamp(1.4rem, 7vw, 1.8rem);
+            letter-spacing: -0.6px;
+            margin-bottom: 10px;
           }
           .lp-hero-desc {
             font-size: 0.85rem;

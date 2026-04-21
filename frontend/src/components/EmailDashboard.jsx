@@ -48,26 +48,27 @@ export default function EmailDashboard({ onClose }) {
       position: 'fixed', inset: 0,
       background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      zIndex: 2000, padding: '20px'
+      zIndex: 2000, padding: 'clamp(8px, 2vw, 20px)'
     }}>
       <div style={{
-        width: '100%', maxWidth: '900px', height: '90vh',
+        width: '100%', maxWidth: '900px', height: 'clamp(80vh, 90vh, 90vh)',
         background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: '24px', display: 'flex', flexDirection: 'column',
+        borderRadius: 'clamp(14px, 3vw, 24px)', display: 'flex', flexDirection: 'column',
         overflow: 'hidden', boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
         animation: 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
       }}>
         {/* Header */}
         <div style={{
-          padding: '24px 32px', borderBottom: '1px solid var(--border)',
+          padding: 'clamp(12px, 3vw, 24px) clamp(14px, 3vw, 32px)', borderBottom: '1px solid var(--border)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: 'linear-gradient(to right, var(--bg-hover), transparent)'
+          background: 'linear-gradient(to right, var(--bg-hover), transparent)',
+          flexWrap: 'wrap', gap: 'clamp(8px, 2vw, 12px)'
         }}>
           <div style={{ flex: 1 }}>
-            <h2 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '1.8rem' }}>📧</span> My Inbox
+            <h2 style={{ margin: 0, fontSize: 'clamp(1rem, 3.5vw, 1.5rem)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 'clamp(6px, 2vw, 12px)' }}>
+              <span style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.8rem)' }}>📧</span> My Inbox
             </h2>
-            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Latest messages from Gmail</p>
+            <p style={{ margin: '4px 0 0', fontSize: 'clamp(0.72rem, 2vw, 0.85rem)', color: 'var(--text-muted)' }}>Latest messages from Gmail</p>
           </div>
           
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -94,7 +95,7 @@ export default function EmailDashboard({ onClose }) {
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '32px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 'clamp(12px, 3vw, 32px)' }}>
           {loading ? (
             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px' }}>
                <div className="dash-spinner"></div>
@@ -140,9 +141,9 @@ export default function EmailDashboard({ onClose }) {
                   target="_blank"
                   rel="noreferrer"
                   style={{
-                    padding: '20px 24px', background: 'var(--bg-input)',
-                    border: '1px solid var(--border)', borderRadius: '18px',
-                    display: 'flex', alignItems: 'flex-start', gap: '16px',
+                    padding: 'clamp(12px, 3vw, 20px) clamp(12px, 3vw, 24px)', background: 'var(--bg-input)',
+                    border: '1px solid var(--border)', borderRadius: 'clamp(12px, 2vw, 18px)',
+                    display: 'flex', alignItems: 'flex-start', gap: 'clamp(8px, 2vw, 16px)',
                     transition: 'all 0.2s', textDecoration: 'none',
                     cursor: 'pointer'
                   }}
@@ -158,21 +159,21 @@ export default function EmailDashboard({ onClose }) {
                   }}
                 >
                   <div style={{
-                    width: '42px', height: '42px', borderRadius: '12px',
+                    width: 'clamp(32px, 8vw, 42px)', height: 'clamp(32px, 8vw, 42px)', borderRadius: 'clamp(8px, 2vw, 12px)',
                     background: 'rgba(230, 57, 70, 0.1)', color: 'var(--accent)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '1.2rem', flexShrink: 0
+                    fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)', flexShrink: 0
                   }}>
                     {email.from.charAt(0).toUpperCase()}
                   </div>
                   
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                      <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontWeight: 700, fontSize: 'clamp(0.8rem, 2.5vw, 0.95rem)', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {email.from}
                       </span>
                     </div>
-                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '6px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <div style={{ fontWeight: 600, fontSize: 'clamp(0.78rem, 2.2vw, 0.9rem)', color: 'var(--text-secondary)', marginBottom: '6px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {email.subject || '(No Subject)'}
                     </div>
                     <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>

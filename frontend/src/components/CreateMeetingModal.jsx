@@ -48,11 +48,13 @@ export default function CreateMeetingModal({ isOpen, onClose, onSuccess }) {
       <div style={{
         background: 'var(--bg-card)', 
         border: '1px solid var(--border)',
-        borderRadius: 16,
-        padding: '24px',
-        width: '100%',
+        borderRadius: 'clamp(12px, 3vw, 16px)',
+        padding: 'clamp(16px, 4vw, 24px)',
+        width: 'calc(100% - 32px)',
         maxWidth: 480,
-        boxShadow: 'var(--shadow-lg)'
+        boxShadow: 'var(--shadow-lg)',
+        maxHeight: 'calc(100vh - 40px)',
+        overflowY: 'auto'
       }}>
         <h2 style={{ margin: '0 0 16px', fontSize: '1.25rem', color: 'var(--text-primary)' }}>Schedule a Meeting</h2>
         
@@ -73,8 +75,8 @@ export default function CreateMeetingModal({ isOpen, onClose, onSuccess }) {
             />
           </div>
 
-          <div style={{ display: 'flex', gap: 12 }}>
-            <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 200px' }}>
                <label style={{ display: 'block', marginBottom: 6, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Start Time <span style={{color:'var(--accent)'}}>*</span></label>
                <input 
                   required
@@ -88,7 +90,7 @@ export default function CreateMeetingModal({ isOpen, onClose, onSuccess }) {
                   }}
                 />
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: '1 1 200px' }}>
                <label style={{ display: 'block', marginBottom: 6, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>End Time <span style={{color:'var(--accent)'}}>*</span></label>
                <input 
                   required
@@ -119,7 +121,7 @@ export default function CreateMeetingModal({ isOpen, onClose, onSuccess }) {
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
              <button 
                 type="button" 
                 onClick={onClose}
@@ -127,7 +129,8 @@ export default function CreateMeetingModal({ isOpen, onClose, onSuccess }) {
                 style={{
                   padding: '10px 16px', borderRadius: 8, border: 'none',
                   background: 'transparent', color: 'var(--text-secondary)',
-                  cursor: 'pointer', fontWeight: 500
+                  cursor: 'pointer', fontWeight: 500,
+                  flex: '1 1 auto', textAlign: 'center', minWidth: 100
                 }}
              >
                 Cancel
@@ -139,7 +142,8 @@ export default function CreateMeetingModal({ isOpen, onClose, onSuccess }) {
                   padding: '10px 20px', borderRadius: 8, border: 'none',
                   background: 'var(--accent)', color: 'white',
                   cursor: isSubmitting ? 'wait' : 'pointer', fontWeight: 600,
-                  opacity: isSubmitting ? 0.7 : 1
+                  opacity: isSubmitting ? 0.7 : 1,
+                  flex: '1 1 140px', textAlign: 'center'
                 }}
              >
                 {isSubmitting ? 'Scheduling...' : 'Save Meeting'}

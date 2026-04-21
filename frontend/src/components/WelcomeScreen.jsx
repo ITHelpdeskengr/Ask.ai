@@ -17,7 +17,7 @@ export default function WelcomeScreen() {
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: 'center',
-      padding: '40px 24px',
+      padding: 'clamp(16px, 5vw, 40px) clamp(12px, 3vw, 24px)',
       maxWidth: 840,
       margin: '0 auto',
       width: '100%',

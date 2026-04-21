@@ -186,7 +186,7 @@ export default function MessageBubble({ message }) {
     <div style={{
       display: 'flex',
       flexDirection: isUser ? 'row-reverse' : 'row',
-      gap: 12,
+      gap: 'clamp(6px, 2vw, 12px)',
       alignItems: 'flex-end',
       animation: 'fadeUp 0.3s ease both',
       padding: '0 4px',
@@ -194,10 +194,10 @@ export default function MessageBubble({ message }) {
       {/* Avatar */}
       {!isUser && (
         <div style={{
-          width: 34, height: 34, borderRadius: '50%',
+          width: 'clamp(26px, 7vw, 34px)', height: 'clamp(26px, 7vw, 34px)', borderRadius: '50%',
           background: 'linear-gradient(135deg, var(--accent) 0%, #c1121f 100%)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0, fontSize: '0.85rem',
+          flexShrink: 0, fontSize: 'clamp(0.65rem, 2vw, 0.85rem)',
           boxShadow: '0 0 12px var(--glow)',
         }}>
           🤖
@@ -255,8 +255,8 @@ export default function MessageBubble({ message }) {
             background: isUser ? 'var(--msg-user-bg)' : 'var(--msg-ai-bg)',
             color: isUser ? 'var(--msg-user-text)' : 'var(--msg-ai-text)',
             borderRadius: isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-            padding: isEditing ? '8px' : '12px 16px',
-            fontSize: '0.9rem',
+            padding: isEditing ? '8px' : 'clamp(8px, 2vw, 12px) clamp(10px, 2.5vw, 16px)',
+            fontSize: 'clamp(0.82rem, 2.5vw, 0.9rem)',
             lineHeight: 1.65,
             boxShadow: 'var(--shadow-sm)',
             border: isUser ? 'none' : '1px solid var(--border)',

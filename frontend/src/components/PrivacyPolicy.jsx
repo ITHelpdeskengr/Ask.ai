@@ -9,21 +9,23 @@ export default function PrivacyPolicy() {
       minHeight: '100vh',
       background: 'var(--bg-base)',
       color: 'var(--text-primary)',
-      padding: '40px 20px',
-      fontFamily: 'var(--font-main)'
+      padding: 'clamp(20px, 5vw, 40px) clamp(12px, 3vw, 20px)',
+      fontFamily: 'var(--font-main)',
+      overflowX: 'hidden'
     }}>
       <div style={{
         maxWidth: '800px',
         margin: '0 auto',
         background: 'var(--bg-card)',
-        padding: '40px',
+        padding: 'clamp(20px, 6vw, 40px)',
         borderRadius: 'var(--radius-lg)',
         border: '1px solid var(--border)',
-        boxShadow: 'var(--shadow-lg)'
+        boxShadow: 'var(--shadow-lg)',
+        width: '100%',
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: 700 }}>Privacy Policy</h1>
-          <button onClick={() => window.location.href = '/'} style={{ color: 'var(--accent)', fontWeight: 600 }}>Back to Home</button>
+          <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: 700, margin: 0 }}>Privacy Policy</h1>
+          <button onClick={() => window.location.href = '/'} style={{ color: 'var(--accent)', fontWeight: 600, fontSize: 'clamp(0.85rem, 3vw, 1rem)' }}>Back to Home</button>
         </div>
 
         <div className="md-content" style={{ lineHeight: '1.8' }}>

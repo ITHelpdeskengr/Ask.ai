@@ -332,7 +332,7 @@ export default function AdminDashboard() {
               top: 0,
               left: 0,
               height: '100vh',
-              width: '280px',
+              width: 'min(240px, 75vw)',
               transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
               transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
               zIndex: 99,
@@ -344,7 +344,7 @@ export default function AdminDashboard() {
             background: 'var(--sidebar-bg, var(--bg-surface))',
             display: 'flex',
             flexDirection: 'column',
-            padding: '16px 12px',
+            padding: isMobile ? '10px 8px' : '16px 12px',
           }}>
             {/* Mobile sidebar header */}
             {isMobile && (
@@ -353,8 +353,8 @@ export default function AdminDashboard() {
                 padding: '4px 4px 16px', marginBottom: 8, borderBottom: '1px solid var(--border)',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: '1.3rem' }}>🛡️</span>
-                  <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem' }}>Admin Menu</span>
+                  <span style={{ fontSize: '1.1rem' }}>🛡️</span>
+                  <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.88rem' }}>Admin Menu</span>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
@@ -377,10 +377,10 @@ export default function AdminDashboard() {
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
-                  borderRadius: 12, border: 'none', background: activeTab === tab.id ? 'var(--bg-hover)' : 'transparent',
+                  display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, padding: isMobile ? '10px 12px' : '14px 16px',
+                  borderRadius: isMobile ? 10 : 12, border: 'none', background: activeTab === tab.id ? 'var(--bg-hover)' : 'transparent',
                   color: activeTab === tab.id ? 'var(--accent)' : 'var(--text-muted)',
-                  fontWeight: activeTab === tab.id ? 700 : 500, fontSize: '0.95rem',
+                  fontWeight: activeTab === tab.id ? 700 : 500, fontSize: isMobile ? '0.82rem' : '0.95rem',
                   cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left', marginBottom: 4
                 }}
               >
@@ -390,9 +390,9 @@ export default function AdminDashboard() {
             
             {/* Sidebar Bottom Action */}
             <button className="admin-signout-btn" onClick={() => { setShowSignoutModal(true); if (isMobile) setSidebarOpen(false); }} style={{
-              marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
-              borderRadius: 12, border: 'none', background: 'transparent',
-              color: '#e63946', fontWeight: 600, fontSize: '0.95rem',
+              marginTop: 'auto', display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, padding: isMobile ? '10px 12px' : '14px 16px',
+              borderRadius: isMobile ? 10 : 12, border: 'none', background: 'transparent',
+              color: '#e63946', fontWeight: 600, fontSize: isMobile ? '0.82rem' : '0.95rem',
               cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left'
             }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(230,57,70,0.1)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

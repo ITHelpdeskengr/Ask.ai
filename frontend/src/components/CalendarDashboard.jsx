@@ -56,26 +56,27 @@ export default function CalendarDashboard({ onClose }) {
       position: 'fixed', inset: 0,
       background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      zIndex: 2000, padding: '20px'
+      zIndex: 2000, padding: 'clamp(8px, 2vw, 20px)'
     }}>
       <div style={{
-        width: '100%', maxWidth: '900px', height: '90vh',
+        width: '100%', maxWidth: '900px', height: 'clamp(80vh, 90vh, 90vh)',
         background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: '24px', display: 'flex', flexDirection: 'column',
+        borderRadius: 'clamp(14px, 3vw, 24px)', display: 'flex', flexDirection: 'column',
         overflow: 'hidden', boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
         animation: 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
       }}>
         {/* Header */}
         <div style={{
-          padding: '24px 32px', borderBottom: '1px solid var(--border)',
-          display: 'flex', alignItems: 'center', justifyContent: 'between',
-          background: 'linear-gradient(to right, var(--bg-hover), transparent)'
+          padding: 'clamp(12px, 3vw, 24px) clamp(14px, 3vw, 32px)', borderBottom: '1px solid var(--border)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          background: 'linear-gradient(to right, var(--bg-hover), transparent)',
+          flexWrap: 'wrap', gap: 'clamp(8px, 2vw, 12px)'
         }}>
           <div style={{ flex: 1 }}>
-            <h2 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '1.8rem' }}>📅</span> My Schedule
+            <h2 style={{ margin: 0, fontSize: 'clamp(1rem, 3.5vw, 1.5rem)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 'clamp(6px, 2vw, 12px)' }}>
+              <span style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.8rem)' }}>📅</span> My Schedule
             </h2>
-            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Connected to Google Calendar</p>
+            <p style={{ margin: '4px 0 0', fontSize: 'clamp(0.72rem, 2vw, 0.85rem)', color: 'var(--text-muted)' }}>Connected to Google Calendar</p>
           </div>
           
           <div style={{ display: 'flex', background: 'var(--bg-hover)', padding: '4px', borderRadius: '12px', gap: '4px' }}>
@@ -106,7 +107,7 @@ export default function CalendarDashboard({ onClose }) {
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '32px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 'clamp(12px, 3vw, 32px)' }}>
           {loading ? (
             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px' }}>
                <div className="dash-spinner"></div>
@@ -153,10 +154,11 @@ export default function CalendarDashboard({ onClose }) {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {dayEvents.map(event => (
                         <div key={event.id} style={{
-                          padding: '16px 20px', background: 'var(--bg-input)',
-                          border: '1px solid var(--border)', borderRadius: '16px',
-                          display: 'flex', alignItems: 'center', gap: '20px',
-                          transition: 'all 0.2s hover', cursor: 'default'
+                          padding: 'clamp(10px, 2vw, 16px) clamp(12px, 2vw, 20px)', background: 'var(--bg-input)',
+                          border: '1px solid var(--border)', borderRadius: 'clamp(10px, 2vw, 16px)',
+                          display: 'flex', alignItems: 'center', gap: 'clamp(10px, 2vw, 20px)',
+                          transition: 'all 0.2s hover', cursor: 'default',
+                          flexWrap: 'wrap'
                         }}>
                           <div style={{
                             minWidth: '85px', textAlign: 'center',
