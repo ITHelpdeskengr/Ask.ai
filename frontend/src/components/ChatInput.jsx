@@ -102,10 +102,10 @@ export default function ChatInput() {
       <div style={{ maxWidth: 840, margin: '0 auto' }}>
 
         <div style={{
-          display: 'flex', alignItems: 'flex-end', gap: 12,
+          display: 'flex', alignItems: 'flex-end', gap: 'clamp(6px, 2vw, 12px)',
           background: 'var(--bg-input)',
           border: '1.5px solid var(--border)',
-          borderRadius: 20,
+          borderRadius: 'clamp(14px, 3vw, 20px)',
           padding: 'var(--input-padding, 14px 18px)',
           transition: 'border-color var(--transition)',
           boxShadow: 'var(--shadow-sm)',
@@ -240,7 +240,7 @@ export default function ChatInput() {
               disabled={loading || isUploading}
               style={{
                 background: 'none', border: 'none', outline: 'none',
-                color: 'var(--text-primary)', fontSize: '1rem', lineHeight: 1.5,
+                color: 'var(--text-primary)', fontSize: 'clamp(0.88rem, 2.5vw, 1rem)', lineHeight: 1.5,
                 resize: 'none', fontFamily: 'var(--font-main)', minHeight: 28,
                 maxHeight: 200, overflowY: 'auto', width: '100%',
                 padding: 0, margin: 0,
@@ -270,7 +270,7 @@ export default function ChatInput() {
           </button>
         </div>
       </div>
-      <p style={{ textAlign: 'center', fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: 8 }}>
+      <p style={{ textAlign: 'center', fontSize: 'clamp(0.6rem, 1.8vw, 0.68rem)', color: 'var(--text-muted)', marginTop: 'clamp(4px, 1vw, 8px)' }}>
         ASK.ai may produce inaccurate information. Verify important facts.
       </p>
     </div>

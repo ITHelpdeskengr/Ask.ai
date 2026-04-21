@@ -141,9 +141,9 @@ export default function AdminDashboard() {
     switch (activeTab) {
       case 'analytics':
         return (
-          <div style={{ padding: 30 }}>
-            <h3 style={{ marginTop: 0, color: 'var(--text-primary)', marginBottom: 24 }}>System Overview</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20 }}>
+          <div style={{ padding: 'clamp(14px, 4vw, 30px)' }}>
+            <h3 style={{ marginTop: 0, color: 'var(--text-primary)', marginBottom: 'clamp(14px, 3vw, 24px)', fontSize: 'clamp(1rem, 3vw, 1.17rem)' }}>System Overview</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))', gap: 'clamp(10px, 2vw, 20px)' }}>
               {[
                 { label: 'Total Users', value: analytics?.totalUsers || users.length, color: '#1d6ce8' },
                 { label: 'Pending Approvals', value: analytics?.pendingUsers || users.filter(u => u.registrationStatus === 'pending').length, color: '#f39c12' },
@@ -152,10 +152,10 @@ export default function AdminDashboard() {
               ].map(stat => (
                 <div key={stat.label} style={{
                   background: 'var(--bg-input)', border: '1px solid var(--border)',
-                  borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 10
+                  borderRadius: 'clamp(10px, 2vw, 16px)', padding: 'clamp(14px, 3vw, 24px)', display: 'flex', flexDirection: 'column', gap: 'clamp(6px, 1.5vw, 10px)'
                 }}>
-                  <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{stat.label}</div>
-                  <div style={{ fontSize: '2.5rem', fontWeight: 800, color: stat.color }}>{stat.value}</div>
+                  <div style={{ fontSize: 'clamp(0.75rem, 2vw, 0.9rem)', color: 'var(--text-secondary)', fontWeight: 600 }}>{stat.label}</div>
+                  <div style={{ fontSize: 'clamp(1.6rem, 5vw, 2.5rem)', fontWeight: 800, color: stat.color }}>{stat.value}</div>
                 </div>
               ))}
             </div>
@@ -420,49 +420,6 @@ export default function AdminDashboard() {
           animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        @media (max-width: 768px) {
-          .admin-header {
-            padding: 14px 16px !important;
-          }
-          .table-container { padding: 12px !important; }
-          
-          .workspaces-layout { flex-direction: column !important; }
-          .workspaces-users { 
-            width: 100% !important; 
-            border-right: none !important; 
-            border-bottom: 1px solid var(--border); 
-            display: flex !important; 
-            overflow-x: auto !important; 
-            overflow-y: hidden !important; 
-            max-height: 80px !important;
-          }
-          .workspaces-users::-webkit-scrollbar { height: 4px; }
-          .workspace-user-item { 
-            border-bottom: none !important; 
-            border-right: 1px solid var(--border); 
-            min-width: 180px; 
-            border-left: none !important;
-            border-top: 4px solid transparent; 
-          }
-          .workspace-user-item.active {
-            border-top: 4px solid var(--accent) !important;
-          }
-          .admin-knowledge-sync-row {
-            flex-direction: column !important;
-          }
-          .admin-knowledge-sync-row input {
-            width: 100% !important;
-          }
-          .admin-knowledge-sync-row button {
-            width: 100% !important;
-            padding: 12px !important;
-            justify-content: center !important;
-          }
-          .admin-profile-card {
-            padding: 24px 16px !important;
-          }
-        }
       `}</style>
       
       {/* Sign Out Modal Overlay */}
@@ -473,9 +430,10 @@ export default function AdminDashboard() {
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}>
           <div style={{
-            background: 'var(--bg-surface)', padding: '36px 40px', borderRadius: '24px',
+            background: 'var(--bg-surface)', padding: 'clamp(24px, 5vw, 36px) clamp(20px, 5vw, 40px)', borderRadius: 'clamp(16px, 3vw, 24px)',
             width: '100%', maxWidth: '380px', display: 'flex', flexDirection: 'column', alignItems: 'center',
-            boxShadow: 'var(--shadow-lg)', animation: 'fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+            boxShadow: 'var(--shadow-lg)', animation: 'fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            margin: '0 16px'
           }}>
             <div style={{
               width: 56, height: 56, background: 'rgba(230, 57, 70, 0.1)',

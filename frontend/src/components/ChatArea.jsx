@@ -33,7 +33,7 @@ export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onT
     }}>
       {/* Header */}
       <header style={{
-        padding: '0 24px',
+        padding: '0 clamp(10px, 3vw, 24px)',
         height: 'var(--header-height, 62px)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderBottom: '1px solid var(--border)',
@@ -62,9 +62,9 @@ export default function ChatArea({ sidebarOpen, onMenuClick, filesPanelOpen, onT
           {hasMessages && (
             <div style={{ overflow: 'hidden' }}>
               <h2 style={{
-                fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)',
+                fontSize: 'clamp(0.82rem, 2.5vw, 0.95rem)', fontWeight: 600, color: 'var(--text-primary)',
                 whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                maxWidth: 320,
+                maxWidth: 'clamp(120px, 40vw, 320px)',
               }}>
                 {activeSession.title}
               </h2>

@@ -82,8 +82,8 @@ export default function LoginPage() {
         onClick={toggle}
         title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
         style={{
-          position: 'absolute', top: 24, right: 24,
-          width: 38, height: 38, borderRadius: 10,
+          position: 'absolute', top: 'clamp(12px, 3vw, 24px)', right: 'clamp(12px, 3vw, 24px)',
+          width: 'clamp(32px, 8vw, 38px)', height: 'clamp(32px, 8vw, 38px)', borderRadius: 10,
           background: 'var(--bg-card)', color: 'var(--text-secondary)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           border: '1px solid var(--border)',
@@ -103,11 +103,11 @@ export default function LoginPage() {
       <button
         onClick={() => window.location.href = '/'}
         style={{
-          position: 'absolute', top: 24, left: 24,
+          position: 'absolute', top: 'clamp(12px, 3vw, 24px)', left: 'clamp(12px, 3vw, 24px)',
           background: 'none', border: 'none',
-          color: 'var(--text-secondary)', fontSize: '0.9rem',
+          color: 'var(--text-secondary)', fontSize: 'clamp(0.78rem, 2.5vw, 0.9rem)',
           fontWeight: 600, cursor: 'pointer',
-          display: 'flex', alignItems: 'center', gap: 8,
+          display: 'flex', alignItems: 'center', gap: 6,
           transition: 'color var(--transition)',
           zIndex: 10
         }}
@@ -139,8 +139,8 @@ export default function LoginPage() {
             {challengeData ? 'Security Check' : 'Welcome to ASK.ai'}
           </h1>
           <p style={{
-            color: 'var(--text-muted)', fontSize: '0.94rem',
-            textAlign: 'center', marginBottom: 32,
+            color: 'var(--text-muted)', fontSize: 'clamp(0.8rem, 2.5vw, 0.94rem)',
+            textAlign: 'center', marginBottom: 'clamp(20px, 4vw, 32px)',
             animation: 'fadeUp 0.6s ease-out 0.2s both',
           }}>{challengeData ? `Enter the code sent to ${challengeData.email}` : 'Sign in to your intelligent AI assistant'}</p>
 
@@ -189,8 +189,8 @@ export default function LoginPage() {
                     style={{
                       width: '100%', textAlign: 'center',
                       background: 'none', border: 'none', outline: 'none',
-                      color: 'var(--text-primary)', fontSize: '1.8rem',
-                      fontFamily: 'monospace', letterSpacing: '8px',
+                      color: 'var(--text-primary)', fontSize: 'clamp(1.3rem, 5vw, 1.8rem)',
+                      fontFamily: 'monospace', letterSpacing: 'clamp(4px, 2vw, 8px)',
                       fontWeight: 700
                     }}
                   />
@@ -257,9 +257,9 @@ export default function LoginPage() {
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       style={{
-                        flex: 1, padding: '12px 10px',
+                        flex: 1, padding: 'clamp(8px, 2vw, 12px) 10px',
                         background: 'none', border: 'none', outline: 'none',
-                        color: 'var(--text-primary)', fontSize: '0.9rem',
+                        color: 'var(--text-primary)', fontSize: 'clamp(0.82rem, 2.5vw, 0.9rem)',
                         fontFamily: 'var(--font-main)',
                       }}
                     />
@@ -291,9 +291,9 @@ export default function LoginPage() {
                       onChange={e => setPassword(e.target.value)}
                       placeholder="••••••••"
                       style={{
-                        flex: 1, padding: '12px 10px',
+                        flex: 1, padding: 'clamp(8px, 2vw, 12px) 10px',
                         background: 'none', border: 'none', outline: 'none',
-                        color: 'var(--text-primary)', fontSize: '0.9rem',
+                        color: 'var(--text-primary)', fontSize: 'clamp(0.82rem, 2.5vw, 0.9rem)',
                         fontFamily: 'var(--font-main)',
                       }}
                     />
@@ -326,10 +326,10 @@ export default function LoginPage() {
                   type="submit"
                   disabled={loading}
                   style={{
-                    width: '100%', padding: '13px 0',
+                    width: '100%', padding: 'clamp(10px, 3vw, 13px) 0',
                     borderRadius: 12,
                     background: 'var(--accent)',
-                    color: '#fff', fontSize: '0.95rem', fontWeight: 600,
+                    color: '#fff', fontSize: 'clamp(0.85rem, 2.5vw, 0.95rem)', fontWeight: 600,
                     transition: 'all var(--transition)',
                     boxShadow: '0 4px 16px rgba(230,57,70,0.25)',
                     opacity: loading ? 0.7 : 1,
@@ -362,11 +362,11 @@ export default function LoginPage() {
                   disabled={loading}
                   style={{
                     width: '100%',
-                    padding: '12px 0',
+                    padding: 'clamp(9px, 2.5vw, 12px) 0',
                     borderRadius: 12,
                     background: theme === 'dark' ? '#fff' : '#1a1a1b',
                     color: theme === 'dark' ? '#1a1a1b' : '#fff',
-                    fontSize: '0.9rem',
+                    fontSize: 'clamp(0.82rem, 2.5vw, 0.9rem)',
                     fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
@@ -438,8 +438,8 @@ export default function LoginPage() {
               pointerEvents: 'all',
               background: 'var(--bg-card)',
               border: '1px solid rgba(250,189,0,0.35)',
-              borderRadius: 20,
-              padding: '28px 32px',
+              borderRadius: 'clamp(14px, 3vw, 20px)',
+              padding: 'clamp(18px, 4vw, 28px) clamp(16px, 4vw, 32px)',
               maxWidth: 420,
               width: '100%',
               boxShadow: '0 24px 64px rgba(0,0,0,0.45), 0 0 0 1px rgba(250,189,0,0.1)',

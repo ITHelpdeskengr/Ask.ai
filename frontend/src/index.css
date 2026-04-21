@@ -136,39 +136,225 @@ a:hover {
   width: 100%;
 }
 
-@media (max-width: 768px) {
-  .chat-messages-container {
-    padding: 12px 12px 8px;
-  }
-}
-
 /* ── Message Bubble Responsive ── */
 .message-bubble-container {
   max-width: 75%;
 }
 
-@media (max-width: 768px) {
-  .message-bubble-container {
-    max-width: 90%;
-  }
-}
-
-/* ── Mobile UI Optimizations ── */
+/* ══════════════════════════════════════════════════════════════
+   TABLET & MOBILE  (≤ 768px)
+   ══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   :root {
     --sidebar-width-closed: 64px;
     --sidebar-width-open: 240px;
-    --header-height: 52px;
-    --input-padding: 10px 14px;
-    --input-padding-x: 14px;
-    --input-padding-y: 10px;
-    --btn-size-sm: 32px;
-    --btn-size-compact: 36px;
-    --btn-padding-compact: 6px;
-    --bubble-action-size: 28px;
+    --header-height: 48px;
+    --input-padding: 8px 10px;
+    --input-padding-x: 10px;
+    --input-padding-y: 8px;
+    --btn-size-sm: 30px;
+    --btn-size-compact: 34px;
+    --btn-padding-compact: 5px;
+    --bubble-action-size: 26px;
   }
 
   .mobile-hide { display: none !important; }
+
+  /* Chat area */
+  .chat-messages-container {
+    padding: 10px 10px 6px;
+  }
+  .message-bubble-container {
+    max-width: 92%;
+  }
+
+  /* Header status badge hide on mobile */
+  .header-status {
+    display: none !important;
+  }
+
+  /* ── Login Page ── */
+  .login-wrapper {
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+  .login-branding {
+    display: none;
+  }
+  .login-form-panel {
+    padding: 16px 14px;
+    justify-content: center;
+  }
+  .login-card {
+    padding: 28px 20px;
+    border-radius: 18px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .login-logo {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 14px;
+  }
+  .login-card h1 {
+    font-size: 1.35rem;
+  }
+  .login-card p {
+    font-size: 0.84rem !important;
+  }
+
+  /* ── Admin Dashboard ── */
+  .admin-header {
+    padding: 10px 12px !important;
+  }
+  .admin-header h2 {
+    font-size: 1rem !important;
+  }
+  .table-container {
+    padding: 10px !important;
+  }
+  .admin-sidebar {
+    width: 240px !important;
+  }
+  .workspaces-layout {
+    flex-direction: column !important;
+  }
+  .workspaces-users {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-height: 80px !important;
+  }
+  .workspaces-users::-webkit-scrollbar { height: 4px; }
+  .workspace-user-item {
+    border-bottom: none !important;
+    border-right: 1px solid var(--border);
+    min-width: 160px;
+    border-left: none !important;
+    border-top: 4px solid transparent;
+  }
+  .workspace-user-item.active {
+    border-top: 4px solid var(--accent) !important;
+  }
+  .admin-knowledge-sync-row {
+    flex-direction: column !important;
+  }
+  .admin-knowledge-sync-row input {
+    width: 100% !important;
+  }
+  .admin-knowledge-sync-row button {
+    width: 100% !important;
+    padding: 10px !important;
+    justify-content: center !important;
+  }
+  .admin-profile-card {
+    padding: 20px 14px !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SMALL MOBILE  (≤ 480px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  :root {
+    --header-height: 44px;
+    --input-padding: 6px 8px;
+    --input-padding-x: 8px;
+    --input-padding-y: 6px;
+    --btn-size-sm: 28px;
+    --btn-size-compact: 30px;
+    --btn-padding-compact: 4px;
+    --bubble-action-size: 24px;
+  }
+
+  /* Chat input & messages */
+  .chat-messages-container {
+    padding: 8px 6px 4px;
+    gap: 10px !important;
+  }
+  .message-bubble-container {
+    max-width: 95%;
+  }
+
+  /* Login card tighter */
+  .login-form-panel {
+    padding: 12px 10px;
+  }
+  .login-card {
+    padding: 22px 16px;
+    border-radius: 14px;
+  }
+  .login-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  .login-card h1 {
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+  }
+  .login-card p {
+    font-size: 0.8rem !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Admin dashboard tighter */
+  .admin-header {
+    padding: 8px 10px !important;
+  }
+  .admin-header h2 {
+    font-size: 0.9rem !important;
+  }
+  .admin-sidebar {
+    width: 220px !important;
+  }
+  .admin-sidebar button {
+    padding: 10px 12px !important;
+    font-size: 0.85rem !important;
+  }
+  .table-container {
+    padding: 6px !important;
+  }
+  .admin-profile-card {
+    padding: 16px 10px !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VERY SMALL MOBILE  (≤ 360px — small Android phones)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 360px) {
+  :root {
+    --header-height: 40px;
+    --btn-size-sm: 26px;
+    --btn-size-compact: 28px;
+  }
+
+  .login-card {
+    padding: 18px 12px;
+  }
+  .login-card h1 {
+    font-size: 1.1rem;
+  }
+  .login-card p {
+    font-size: 0.76rem !important;
+  }
+
+  .admin-header h2 {
+    font-size: 0.82rem !important;
+  }
+  .admin-sidebar {
+    width: 200px !important;
+  }
+  .admin-sidebar button {
+    padding: 8px 10px !important;
+    font-size: 0.8rem !important;
+  }
 }
 
 /* Markdown styles inside messages */
