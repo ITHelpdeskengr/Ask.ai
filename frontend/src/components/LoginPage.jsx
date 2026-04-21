@@ -11,31 +11,20 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [pendingVerification, setPendingVerification] = useState(null); // { email, isNewUser }
-  const { login, loginWithGoogle, challengeData, setChallengeData, verifySecurityCode } = useAuth();
+  const { login, loginWithGoogle, challengeData, setChallengeData, verifySecurityCode, loginAndAuthorizeWithGoogle } = useAuth();
   const { theme, toggle } = useTheme();
 
-  const handleGoogleAuth = (() => {
+  const handleGoogleClick = async () => {
     try {
-      return useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-          setLoading(true);
-          setError('');
-          const result = await loginWithGoogle(tokenResponse);
-          if (result?.pendingApproval) {
-            setPendingVerification({ email: result.email, isNewUser: result.isNewUser });
-          } else if (!result?.success) {
-            setError(result?.error || 'Google Sign-In failed');
-          }
-          setLoading(false);
-        },
-        onError: () => setError('Google Sign-In was cancelled or failed'),
-        scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
-        prompt: 'consent',
-      });
-    } catch (e) {
-      return () => setError('Google Login is currently disabled. Please contact the administrator.');
+      setLoading(true);
+      setError('');
+      await loginAndAuthorizeWithGoogle();
+    } catch (err) {
+      setError('Google Sign-In failed to initialize');
+    } finally {
+      setLoading(false);
     }
-  })();
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -358,7 +347,7 @@ export default function LoginPage() {
               {/* Unified Google Login & Authorization */}
               <div style={{ width: '100%', animation: 'fadeUp 0.6s ease-out 0.4s both' }}>
                 <button
-                  onClick={() => handleGoogleAuth()}
+                  onClick={handleGoogleClick}
                   disabled={loading}
                   style={{
                     width: '100%',

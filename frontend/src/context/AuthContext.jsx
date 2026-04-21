@@ -120,30 +120,19 @@ export function AuthProvider({ children }) {
     }
   }, [handleAuthResponse]);
 
-  // Handle Google Auth safely - will only be used if client ID is present
-  const googleLoginHook = (() => {
-    try {
-      // Generate a simple state for security
-      const authState = Math.random().toString(36).substring(2, 15);
-      
-      return useGoogleLogin({
-        flow: 'auth-code',
-        state: authState,
-        onSuccess: (codeResponse) => {
-          // Send code and state to backend
-          loginWithGoogle({ ...codeResponse, originalState: authState });
-        },
-        onError: (error) => console.error('[GOOGLE AUTH] Error:', error),
-        scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
-        prompt: 'consent',
-      });
-    } catch (e) {
-      return () => console.warn('Google Login unavailable: Provider not found');
-    }
-  })();
+  // Handle Google Auth safely - move to top level to comply with React Hook rules
+  const loginAndAuthorizeWithGoogle = useGoogleLogin({
+    flow: 'auth-code',
+    onSuccess: (codeResponse) => {
+      // Send code to backend
+      loginWithGoogle(codeResponse);
+    },
+    onError: (error) => console.error('[GOOGLE AUTH] Error:', error),
+    scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
+    prompt: 'consent',
+  });
 
-  const loginAndAuthorizeWithGoogle = googleLoginHook;
-  const requestGoogleAccess = googleLoginHook;
+  const requestGoogleAccess = loginAndAuthorizeWithGoogle;
 
   const updateProfile = useCallback((updatedUser, newToken) => {
     setUser(prev => ({
