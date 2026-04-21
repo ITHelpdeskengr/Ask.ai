@@ -4,6 +4,10 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Layout from './components/Layout';
 import LoginPage from './components/LoginPage';
+import LandingPage from './components/LandingPage';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
+
 
 import PublicCalendar from './components/PublicCalendar';
 
@@ -24,6 +28,11 @@ function AppContent() {
   }, [user]);
 
   const path = window.location.pathname;
+
+  // Handle Public Routes
+  if (path === '/privacy') return <PrivacyPolicy />;
+  if (path === '/terms') return <TermsOfService />;
+
   if (path.startsWith('/calendar/')) {
     const token = path.split('/')[2];
     if (token) {
@@ -31,7 +40,14 @@ function AppContent() {
     }
   }
 
-  return isAuthenticated ? (
+  // Auth Routing
+  if (!isAuthenticated) {
+    if (path === '/login') return <LoginPage />;
+    return <LandingPage />;
+  }
+
+  // Authenticated Dashboard
+  return (
     <ChatProvider>
       <UIProvider>
         {user?.role === 'admin' ? (
@@ -43,8 +59,6 @@ function AppContent() {
         )}
       </UIProvider>
     </ChatProvider>
-  ) : (
-    <LoginPage />
   );
 }
 

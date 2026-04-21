@@ -98,6 +98,28 @@ export default function LoginPage() {
           : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
         }
       </button>
+      
+      {/* Back to Home link */}
+      <button
+        onClick={() => window.location.href = '/'}
+        style={{
+          position: 'absolute', top: 24, left: 24,
+          background: 'none', border: 'none',
+          color: 'var(--text-secondary)', fontSize: '0.9rem',
+          fontWeight: 600, cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: 8,
+          transition: 'color var(--transition)',
+          zIndex: 10
+        }}
+        onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
+        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back to Home
+      </button>
+
 
       {/* Main centered panel */}
       <div className="login-form-panel">
@@ -374,9 +396,11 @@ export default function LoginPage() {
                 </button>
               </div>
 
-              {/* Privacy Policy Link for Google Verification */}
-              <div style={{ marginTop: 24, textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                By logging in, you agree to our <a href="/privacy" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Privacy Policy</a>
+              {/* Privacy & Terms Links for Google Verification */}
+              <div style={{ marginTop: 24, textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: 12, justifyContent: 'center' }}>
+                <a href="/privacy" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Privacy Policy</a>
+                <span>•</span>
+                <a href="/terms" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Terms of Service</a>
               </div>
             </>
           )}
