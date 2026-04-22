@@ -32,7 +32,7 @@ export default function PrivacyPolicy() {
           <p><strong>Last Updated: April 21, 2026</strong></p>
           
           <h2>1. Introduction</h2>
-          <p>Welcome to ASK.ai. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights.</p>
+          <p>Welcome to HELPDESK. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights.</p>
 
           <h2>2. Data We Collect</h2>
           <p>We may collect, use, store and transfer different kinds of personal data about you which we have grouped together as follows:</p>
@@ -52,7 +52,7 @@ export default function PrivacyPolicy() {
           </ul>
 
           <h2>4. Google OAuth</h2>
-          <p>ASK.ai uses Google OAuth to allow you to sign in securely. We only request access to the scopes necessary to provide our services, such as reading your calendar or emails if you explicitly enable those integrations. We do not sell your personal data to third parties.</p>
+          <p>HELPDESK uses Google OAuth to allow you to sign in securely. We only request access to the scopes necessary to provide our services, such as reading your calendar or emails if you explicitly enable those integrations. We do not sell your personal data to third parties.</p>
 
           <h2>5. Your Rights</h2>
           <p>Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to request access, correction, erasure, or restriction of processing.</p>

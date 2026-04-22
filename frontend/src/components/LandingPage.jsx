@@ -418,11 +418,17 @@ export default function LandingPage() {
         <nav className="lp-nav">
           <div className="lp-nav-brand">
             <div className="lp-nav-logo">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 10V8A7 7 0 0 1 19 8V10" strokeWidth="2" strokeLinecap="round" />
+                <rect x="3" y="9" width="4" height="6" rx="2" fill="white" stroke="none" />
+                <rect x="17" y="9" width="4" height="6" rx="2" fill="white" stroke="none" />
+                <path d="M19 14 C19 18 15 20 12 20 L13 23 L15 19" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="8" cy="12" r="1.2" fill="#0052FF" stroke="none" />
+                <circle cx="12" cy="12" r="1.2" fill="#0052FF" stroke="none" />
+                <circle cx="16" cy="12" r="1.2" fill="#0052FF" stroke="none" />
               </svg>
             </div>
-            <span className="lp-nav-title">ASK.ai</span>
+            <span className="lp-nav-title">HELPDESK</span>
           </div>
 
           <div className="lp-nav-actions">
@@ -487,7 +493,7 @@ export default function LandingPage() {
             <a href="/terms">Terms of Service</a>
             <a href="#">Contact</a>
           </div>
-          <p className="lp-footer-copy">© 2026 ASK.ai. All rights reserved.</p>
+          <p className="lp-footer-copy">© 2026 HELPDESK. All rights reserved.</p>
         </footer>
       </div>
     </>

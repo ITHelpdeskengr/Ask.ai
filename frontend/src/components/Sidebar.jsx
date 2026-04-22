@@ -124,13 +124,19 @@ export default function Sidebar({ open, onToggle, onClose, onOpenFilesPanel, isA
               flexShrink: 0,
               boxShadow: '0 0 16px var(--glow)',
             }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 10V8A7 7 0 0 1 19 8V10" strokeWidth="2" strokeLinecap="round" />
+                <rect x="3" y="9" width="4" height="6" rx="2" fill="white" stroke="none" />
+                <rect x="17" y="9" width="4" height="6" rx="2" fill="white" stroke="none" />
+                <path d="M19 14 C19 18 15 20 12 20 L13 23 L15 19" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="8" cy="12" r="1.2" fill="#0052FF" stroke="none" />
+                <circle cx="12" cy="12" r="1.2" fill="#0052FF" stroke="none" />
+                <circle cx="16" cy="12" r="1.2" fill="#0052FF" stroke="none" />
               </svg>
             </div>
             {effectiveOpen && (
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontWeight: 700, fontSize: isMobile ? '0.88rem' : '1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>ASK.ai</div>
+                <div style={{ fontWeight: 700, fontSize: isMobile ? '0.88rem' : '1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>HELPDESK</div>
                 <div style={{ fontSize: isMobile ? '0.62rem' : '0.7rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>AI Assistant</div>
               </div>
             )}

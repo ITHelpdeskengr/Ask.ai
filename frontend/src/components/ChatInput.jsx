@@ -271,7 +271,7 @@ export default function ChatInput() {
         </div>
       </div>
       <p style={{ textAlign: 'center', fontSize: 'clamp(0.6rem, 1.8vw, 0.68rem)', color: 'var(--text-muted)', marginTop: 'clamp(4px, 1vw, 8px)' }}>
-        ASK.ai may produce inaccurate information. Verify important facts.
+        HELPDESK may produce inaccurate information. Verify important facts.
       </p>
     </div>
   );
