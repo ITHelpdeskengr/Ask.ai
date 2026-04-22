@@ -614,15 +614,18 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
                                  results.map(r => `Title: ${r.title}\nContent: ${r.content}\nSource: ${r.url}`).join('\n\n---\n\n');
                   }
                 } else {
-                  // Fallback: Free Web Search using duck-duck-scrape
-                  const { search } = require('duck-duck-scrape');
-                  const searchResults = await search(args.query, { safeSearch: "off" });
+                  // Fallback: Free Web Search using DuckDuckGo HTML
+                  const searchRes = await axios.get('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(args.query), {
+                    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+                  });
+                  const matches = [...searchRes.data.matchAll(/<a class="result__snippet[^>]*>(.*?)<\/a>/gi)];
+                  const snippets = matches.map(m => m[1].replace(/<\/?[^>]+(>|$)/g, ""));
                   
-                  if (!searchResults.results || searchResults.results.length === 0) {
+                  if (snippets.length === 0) {
                     toolResult = `[FREE WEB SEARCH] No results found on the web for "${args.query}".`;
                   } else {
                     toolResult = `[FREE WEB SEARCH RESULTS for "${args.query}"]\n` + 
-                                 searchResults.results.slice(0, 5).map(r => `Title: ${r.title}\nSnippet: ${r.description}\nSource: ${r.url}`).join('\n\n---\n\n');
+                                 snippets.slice(0, 5).map((s, i) => `Result ${i+1}:\n${s}`).join('\n\n---\n\n');
                   }
                 }
               } catch (err) {
