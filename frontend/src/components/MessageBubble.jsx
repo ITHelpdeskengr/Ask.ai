@@ -147,6 +147,7 @@ export default function MessageBubble({ message }) {
   
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
+  const [feedback, setFeedback] = useState(null);
 
   if (isSystem) {
     return (
@@ -312,16 +313,72 @@ export default function MessageBubble({ message }) {
             isUser ? (
               <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{message.content}</p>
             ) : (
-              <div className="md-content">
-                <ReactMarkdown 
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    img: ({ node, ...props }) => <ImageWithFallback {...props} />
-                  }}
-                >
-                  {message.content}
-                </ReactMarkdown>
-              </div>
+              <>
+                <div className="md-content">
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      img: ({ node, ...props }) => <ImageWithFallback {...props} />
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                </div>
+
+                {/* Feedback Widget */}
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                    {feedback === null ? 'Did I resolve your problem?' : feedback === 'yes' ? 'Glad I could help!' : 'Sorry to hear that, I will try to do better!'}
+                  </span>
+                  {feedback === null && (
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button
+                        onClick={() => setFeedback('yes')}
+                        style={{ padding: '4px 16px', borderRadius: 6, background: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s', fontWeight: 500 }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-input)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        onClick={() => setFeedback('no')}
+                        style={{ padding: '4px 16px', borderRadius: 6, background: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s', fontWeight: 500 }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-input)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+                      >
+                        No
+                      </button>
+                    </div>
+                  )}
+
+                  {/* External PowerApp Link */}
+                  <div style={{ marginTop: 4 }}>
+                    <a 
+                      href="https://apps.powerapps.com/play/e/default-036b84b7-26b8-441d-87c1-f3590d3f2ed1/a/a6134afe-0dfa-427e-9618-29b6197173e0?screenColor=rgba%28255%2C+255%2C+255%2C+1%29&tenantId=036b84b7-26b8-441d-87c1-f3590d3f2ed1&source=sharebutton&sourcetime=1776836798618#" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ 
+                        fontSize: '0.85rem', 
+                        fontWeight: 600, 
+                        color: 'var(--accent)', 
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.textDecoration = 'underline'}
+                      onMouseLeave={e => e.currentTarget.style.textDecoration = 'none'}
+                    >
+                      Open IT Helpdesk App
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </>
             )
           )}
         </div>
