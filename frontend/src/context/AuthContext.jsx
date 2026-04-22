@@ -22,6 +22,8 @@ export function AuthProvider({ children }) {
   });
 
   const [challengeData, setChallengeData] = useState(null);
+  const [googleAuthPending, setGoogleAuthPending] = useState(null);
+  const [googleAuthLoading, setGoogleAuthLoading] = useState(false);
 
   useEffect(() => {
     if (user) localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
@@ -123,11 +125,19 @@ export function AuthProvider({ children }) {
   // Handle Google Auth safely - move to top level to comply with React Hook rules
   const loginAndAuthorizeWithGoogle = useGoogleLogin({
     flow: 'auth-code',
-    onSuccess: (codeResponse) => {
-      // Send code to backend
-      loginWithGoogle(codeResponse);
+    onSuccess: async (codeResponse) => {
+      setGoogleAuthLoading(true);
+      setGoogleAuthPending(null);
+      const result = await loginWithGoogle(codeResponse);
+      setGoogleAuthLoading(false);
+      if (result.pendingApproval) {
+        setGoogleAuthPending({ isNewUser: result.isNewUser, email: result.email });
+      }
     },
-    onError: (error) => console.error('[GOOGLE AUTH] Error:', error),
+    onError: (error) => {
+      console.error('[GOOGLE AUTH] Error:', error);
+      setGoogleAuthLoading(false);
+    },
     scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
     prompt: 'consent',
   });
@@ -161,6 +171,9 @@ export function AuthProvider({ children }) {
       updateProfile,
       requestGoogleAccess,
       loginAndAuthorizeWithGoogle,
+      googleAuthPending,
+      setGoogleAuthPending,
+      googleAuthLoading,
       googleToken,
       isAuthenticated: !!user 
     }}>

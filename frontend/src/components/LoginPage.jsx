@@ -10,8 +10,17 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
-  const [pendingVerification, setPendingVerification] = useState(null); // { email, isNewUser }
-  const { login, loginWithGoogle, challengeData, setChallengeData, verifySecurityCode, loginAndAuthorizeWithGoogle } = useAuth();
+  const { 
+    login, 
+    loginWithGoogle, 
+    challengeData, 
+    setChallengeData, 
+    verifySecurityCode, 
+    loginAndAuthorizeWithGoogle,
+    googleAuthPending: pendingVerification,
+    setGoogleAuthPending: setPendingVerification,
+    googleAuthLoading
+  } = useAuth();
   const { theme, toggle } = useTheme();
 
   const handleGoogleClick = async () => {
@@ -313,7 +322,7 @@ export default function LoginPage() {
                 {/* Sign In Button */}
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || googleAuthLoading}
                   style={{
                     width: '100%', padding: 'clamp(10px, 3vw, 13px) 0',
                     borderRadius: 12,
@@ -328,7 +337,7 @@ export default function LoginPage() {
                   onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'translateY(-1px)'; }}
                   onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
                 >
-                  {loading ? (
+                  {loading || googleAuthLoading ? (
                     <div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
                   ) : 'Sign In'}
                 </button>
@@ -348,7 +357,7 @@ export default function LoginPage() {
               <div style={{ width: '100%', animation: 'fadeUp 0.6s ease-out 0.4s both' }}>
                 <button
                   onClick={handleGoogleClick}
-                  disabled={loading}
+                  disabled={loading || googleAuthLoading}
                   style={{
                     width: '100%',
                     padding: 'clamp(9px, 2.5vw, 12px) 0',
@@ -381,7 +390,9 @@ export default function LoginPage() {
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                   </svg>
-                  Continue with Google
+                  {loading || googleAuthLoading ? (
+                    <div style={{ width: 18, height: 18, border: '2.5px solid rgba(127,127,127,0.3)', borderTopColor: 'currentColor', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                  ) : 'Continue with Google'}
                 </button>
               </div>
 

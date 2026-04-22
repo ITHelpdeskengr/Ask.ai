@@ -189,8 +189,12 @@ router.post('/google', async (req, res) => {
       res.status(500).json({ error: 'Failed to initiate security challenge: ' + gErr.message });
     }
   } catch (err) {
-    console.error('[AUTH ERROR]', err.message);
-    res.status(401).json({ error: 'Invalid Google token' });
+    console.error('[AUTH ERROR] Google Verification Failed:', {
+      message: err.message,
+      stack: err.stack,
+      response: err.response?.data
+    });
+    res.status(401).json({ error: 'Invalid Google token: ' + err.message });
   }
 });
 
