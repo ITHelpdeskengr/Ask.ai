@@ -454,9 +454,6 @@ export default function LandingPage() {
             >
               Get Started Free
             </button>
-            <button className="lp-btn-secondary">
-              Watch Demo
-            </button>
           </div>
         </section>
 
