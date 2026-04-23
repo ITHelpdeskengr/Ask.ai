@@ -142,15 +142,38 @@ router.post('/google', async (req, res) => {
     let user = await User.findOne({ $or: [{ googleId }, { email }] });
     let isNewUser = false;
 
+    // Define main admin email
+    const mainAdminEmail = 'ithelpdeskengr@gmail.com';
+
     if (!user) {
-      // Brand-new Google sign-up: create with pending status
-      user = new User({ googleId, email, name, avatar, isVerified: false, registrationStatus: 'pending' });
+      // Brand-new Google sign-up
+      const isAdmin = email === mainAdminEmail;
+      user = new User({ 
+        googleId, 
+        email, 
+        name, 
+        avatar, 
+        isVerified: isAdmin, 
+        registrationStatus: isAdmin ? 'approved' : 'pending',
+        role: isAdmin ? 'admin' : 'user'
+      });
       await user.save();
-      isNewUser = true;
-    } else if (!user.googleId) {
-      user.googleId = googleId;
-      user.avatar = avatar;
-      await user.save();
+      isNewUser = !isAdmin; // if admin, we can skip the "pending new user" flow
+    } else {
+      let updated = false;
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.avatar = avatar;
+        updated = true;
+      }
+      // If it's the admin email but not an admin yet, promote them
+      if (email === mainAdminEmail && (user.role !== 'admin' || user.registrationStatus !== 'approved')) {
+        user.role = 'admin';
+        user.registrationStatus = 'approved';
+        user.isVerified = true;
+        updated = true;
+      }
+      if (updated) await user.save();
     }
 
     if (user.role !== 'admin') {
