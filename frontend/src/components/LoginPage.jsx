@@ -19,7 +19,9 @@ export default function LoginPage() {
     loginAndAuthorizeWithGoogle,
     googleAuthPending: pendingVerification,
     setGoogleAuthPending: setPendingVerification,
-    googleAuthLoading
+    googleAuthLoading,
+    googleAuthError,
+    setGoogleAuthError
   } = useAuth();
   const { theme, toggle } = useTheme();
 
@@ -27,6 +29,7 @@ export default function LoginPage() {
     try {
       setLoading(true);
       setError('');
+      setGoogleAuthError(null);
       await loginAndAuthorizeWithGoogle();
     } catch (err) {
       setError('Google Sign-In failed to initialize');

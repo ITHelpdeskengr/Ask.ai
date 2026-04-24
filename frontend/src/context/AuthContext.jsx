@@ -24,6 +24,7 @@ export function AuthProvider({ children }) {
   const [challengeData, setChallengeData] = useState(null);
   const [googleAuthPending, setGoogleAuthPending] = useState(null);
   const [googleAuthLoading, setGoogleAuthLoading] = useState(false);
+  const [googleAuthError, setGoogleAuthError] = useState(null);
 
   useEffect(() => {
     if (user) localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
@@ -128,14 +129,18 @@ export function AuthProvider({ children }) {
     onSuccess: async (codeResponse) => {
       setGoogleAuthLoading(true);
       setGoogleAuthPending(null);
+      setGoogleAuthError(null);
       const result = await loginWithGoogle(codeResponse);
       setGoogleAuthLoading(false);
       if (result.pendingApproval) {
         setGoogleAuthPending({ isNewUser: result.isNewUser, email: result.email });
+      } else if (!result.success && !result.requireVerification) {
+        setGoogleAuthError(result.error || 'Google Sign-In failed. Please try again.');
       }
     },
     onError: (error) => {
       console.error('[GOOGLE AUTH] Error:', error);
+      setGoogleAuthError(error?.error_description || error?.error || 'Google Sign-In was cancelled or failed. Check that your Render URL is in Google Cloud Console Authorized Origins.');
       setGoogleAuthLoading(false);
     },
     scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
@@ -174,6 +179,8 @@ export function AuthProvider({ children }) {
       googleAuthPending,
       setGoogleAuthPending,
       googleAuthLoading,
+      googleAuthError,
+      setGoogleAuthError,
       googleToken,
       isAuthenticated: !!user 
     }}>

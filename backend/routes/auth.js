@@ -153,12 +153,12 @@ router.post('/google', async (req, res) => {
         email, 
         name, 
         avatar, 
-        isVerified: isAdmin, 
-        registrationStatus: isAdmin ? 'approved' : 'pending',
+        isVerified: true, 
+        registrationStatus: 'approved',
         role: isAdmin ? 'admin' : 'user'
       });
       await user.save();
-      isNewUser = !isAdmin; // if admin, we can skip the "pending new user" flow
+      isNewUser = false; // Bypass pending new user flow
     } else {
       let updated = false;
       if (!user.googleId) {
@@ -166,8 +166,14 @@ router.post('/google', async (req, res) => {
         user.avatar = avatar;
         updated = true;
       }
+      // Auto-approve users who were previously stuck in pending state
+      if (user.registrationStatus === 'pending') {
+        user.registrationStatus = 'approved';
+        user.isVerified = true;
+        updated = true;
+      }
       // If it's the admin email but not an admin yet, promote them
-      if (email === mainAdminEmail && (user.role !== 'admin' || user.registrationStatus !== 'approved')) {
+      if (email === mainAdminEmail && user.role !== 'admin') {
         user.role = 'admin';
         user.registrationStatus = 'approved';
         user.isVerified = true;
@@ -177,9 +183,6 @@ router.post('/google', async (req, res) => {
     }
 
     if (user.role !== 'admin') {
-      if (user.registrationStatus === 'pending') {
-        return res.status(200).json({ pendingApproval: true, email: user.email, isNewUser });
-      }
       if (user.registrationStatus === 'rejected') {
         return res.status(403).json({ error: 'Your registration was rejected by the administrator.' });
       }
