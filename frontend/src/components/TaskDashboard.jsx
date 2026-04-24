@@ -10,6 +10,7 @@ export default function TaskDashboard({ onClose }) {
   const [newTitle, setNewTitle] = useState('');
   const [newPriority, setNewPriority] = useState('medium');
   const [newDueDate, setNewDueDate] = useState('');
+  const [newDueTime, setNewDueTime] = useState('');
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
@@ -58,10 +59,15 @@ export default function TaskDashboard({ onClose }) {
 
     setIsAdding(true);
     try {
+      let dueDateISO = null;
+      if (newDueDate) {
+        const combined = newDueTime ? `${newDueDate}T${newDueTime}` : newDueDate;
+        dueDateISO = new Date(combined).toISOString();
+      }
       const payload = {
         title: newTitle,
         priority: newPriority,
-        dueDate: newDueDate ? new Date(newDueDate).toISOString() : null,
+        dueDate: dueDateISO,
         status: 'pending'
       };
 
@@ -70,6 +76,7 @@ export default function TaskDashboard({ onClose }) {
       setNewTitle('');
       setNewPriority('medium');
       setNewDueDate('');
+      setNewDueTime('');
     } catch (err) {
       console.error('[ADD TASK ERROR]', err);
       alert('Failed to add task.');
@@ -190,6 +197,19 @@ export default function TaskDashboard({ onClose }) {
                 fontSize: '0.85rem', outline: 'none', cursor: 'pointer'
               }}
             />
+            <input 
+              type="time"
+              value={newDueTime}
+              onChange={e => setNewDueTime(e.target.value)}
+              disabled={!newDueDate}
+              title={!newDueDate ? 'Select a date first' : 'Set time'}
+              style={{
+                padding: '9px 12px', borderRadius: '12px', background: 'var(--bg-input)',
+                border: '1px solid var(--border)', color: newDueDate ? 'var(--text-secondary)' : 'var(--text-muted)',
+                fontSize: '0.85rem', outline: 'none', cursor: newDueDate ? 'pointer' : 'not-allowed',
+                opacity: newDueDate ? 1 : 0.5
+              }}
+            />
 
             <button 
               type="submit"
@@ -277,11 +297,16 @@ export default function TaskDashboard({ onClose }) {
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
-                    {task.dueDate && (
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                        📅 {format(new Date(task.dueDate), 'MMM d')}
-                      </div>
-                    )}
+                    {task.dueDate && (() => {
+                      const d = new Date(task.dueDate);
+                      const hasTime = d.getHours() !== 0 || d.getMinutes() !== 0;
+                      return (
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                          📅 {format(d, 'MMM d')}
+                          {hasTime && <span style={{ color: 'var(--accent)', fontWeight: 600 }}>⏰ {format(d, 'h:mm a')}</span>}
+                        </div>
+                      );
+                    })()}
 
                     <div style={{ 
                       fontSize: '0.7rem', padding: '4px 8px', borderRadius: '6px', 
