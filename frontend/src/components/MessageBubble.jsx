@@ -140,7 +140,7 @@ function ShareLinkButton({ url }) {
 }
 
 export default function MessageBubble({ message }) {
-  const { activeId, updateMessage } = useChat();
+  const { activeId, updateMessage, newSession, addDirectMessage } = useChat();
   const isUser = message.role === 'user';
   const isSystem = message.role === 'system';
   const time = message.timestamp ? format(new Date(message.timestamp), 'h:mm a') : '';
@@ -333,7 +333,10 @@ export default function MessageBubble({ message }) {
                   {feedback === null && (
                     <div style={{ display: 'flex', gap: 8 }}>
                       <button
-                        onClick={() => setFeedback('yes')}
+                        onClick={() => {
+                          setFeedback('yes');
+                          setTimeout(() => newSession(), 1000);
+                        }}
                         style={{ padding: '4px 16px', borderRadius: 6, background: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s', fontWeight: 500 }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-input)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
@@ -341,7 +344,10 @@ export default function MessageBubble({ message }) {
                         Yes
                       </button>
                       <button
-                        onClick={() => setFeedback('no')}
+                        onClick={() => {
+                          setFeedback('no');
+                          setTimeout(() => addDirectMessage("I'm sorry to hear that. Could you provide more details so I can better assist you?"), 500);
+                        }}
                         style={{ padding: '4px 16px', borderRadius: 6, background: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s', fontWeight: 500 }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-input)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
