@@ -177,7 +177,7 @@ export default function TaskDashboard({ onClose }) {
               onChange={e => setNewPriority(e.target.value)}
               style={{
                 padding: '10px 12px', borderRadius: '12px', background: 'var(--bg-input)',
-                border: '1px solid var(--border)', color: 'var(--text-secondary)',
+                border: '1px solid var(--border)', color: 'var(--text-primary)',
                 fontSize: '0.85rem', cursor: 'pointer', outline: 'none'
               }}
             >
@@ -193,8 +193,9 @@ export default function TaskDashboard({ onClose }) {
               onChange={e => setNewDueDate(e.target.value)}
               style={{
                 padding: '9px 12px', borderRadius: '12px', background: 'var(--bg-input)',
-                border: '1px solid var(--border)', color: 'var(--text-secondary)',
-                fontSize: '0.85rem', outline: 'none', cursor: 'pointer'
+                border: '1px solid var(--border)', color: 'var(--text-primary)',
+                fontSize: '0.85rem', outline: 'none', cursor: 'pointer',
+                colorScheme: 'light dark'
               }}
             />
             <input 
@@ -205,9 +206,10 @@ export default function TaskDashboard({ onClose }) {
               title={!newDueDate ? 'Select a date first' : 'Set time'}
               style={{
                 padding: '9px 12px', borderRadius: '12px', background: 'var(--bg-input)',
-                border: '1px solid var(--border)', color: newDueDate ? 'var(--text-secondary)' : 'var(--text-muted)',
+                border: '1px solid var(--border)', color: 'var(--text-primary)',
                 fontSize: '0.85rem', outline: 'none', cursor: newDueDate ? 'pointer' : 'not-allowed',
-                opacity: newDueDate ? 1 : 0.5
+                opacity: newDueDate ? 1 : 0.5,
+                colorScheme: 'light dark'
               }}
             />
 
