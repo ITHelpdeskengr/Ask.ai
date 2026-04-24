@@ -120,6 +120,17 @@ export function ChatProvider({ children }) {
     ));
   }, []);
 
+  const addConversationDivider = useCallback((targetId = null) => {
+    const sessionIdToUse = targetId || activeIdRef.current;
+    const divider = { id: uuidv4(), role: 'divider', content: 'New Conversation', timestamp: new Date() };
+    const greeting = { id: uuidv4(), role: 'assistant', content: "Hello! I'm ready to help you with a new question. What can I assist you with today?", timestamp: new Date() };
+    setSessions(prev => prev.map(s =>
+      s.id === sessionIdToUse
+        ? { ...s, messages: [...s.messages, divider, greeting] }
+        : s
+    ));
+  }, []);
+
   const newSession = useCallback(() => {
     const s = { id: uuidv4(), title: 'New Conversation', messages: [], createdAt: new Date(), status: 'idle' };
     setSessions(prev => [s, ...prev]);
@@ -153,7 +164,7 @@ export function ChatProvider({ children }) {
   }, []);
 
   return (
-    <ChatContext.Provider value={{ sessions, activeSession, activeId, setActiveId, loading, sendMessage, addDirectMessage, newSession, deleteSession, updateMessage }}>
+    <ChatContext.Provider value={{ sessions, activeSession, activeId, setActiveId, loading, sendMessage, addDirectMessage, addConversationDivider, newSession, deleteSession, updateMessage }}>
       {children}
     </ChatContext.Provider>
   );

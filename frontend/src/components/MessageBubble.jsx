@@ -140,7 +140,7 @@ function ShareLinkButton({ url }) {
 }
 
 export default function MessageBubble({ message }) {
-  const { activeId, updateMessage, newSession, addDirectMessage } = useChat();
+  const { activeId, updateMessage, addConversationDivider, addDirectMessage } = useChat();
   const isUser = message.role === 'user';
   const isSystem = message.role === 'system';
   const time = message.timestamp ? format(new Date(message.timestamp), 'h:mm a') : '';
@@ -167,6 +167,35 @@ export default function MessageBubble({ message }) {
         }} title={message.content}>
           {message.content}
         </div>
+      </div>
+    );
+  }
+
+  // Conversation divider — rendered inline in the chat
+  if (message.role === 'divider') {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        width: '100%', margin: '16px 0 8px',
+        animation: 'fadeUp 0.4s ease both'
+      }}>
+        <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, var(--border))' }} />
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 8,
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border)',
+          borderRadius: 99,
+          padding: '5px 14px',
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          color: 'var(--text-muted)',
+          whiteSpace: 'nowrap',
+          boxShadow: 'var(--shadow-sm)',
+        }}>
+          <span style={{ fontSize: '0.85rem' }}>✨</span>
+          New Conversation
+        </div>
+        <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, var(--border))' }} />
       </div>
     );
   }
@@ -335,7 +364,7 @@ export default function MessageBubble({ message }) {
                       <button
                         onClick={() => {
                           setFeedback('yes');
-                          setTimeout(() => newSession(), 1000);
+                          setTimeout(() => addConversationDivider(), 800);
                         }}
                         style={{ padding: '4px 16px', borderRadius: 6, background: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s', fontWeight: 500 }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
