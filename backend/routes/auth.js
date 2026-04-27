@@ -185,11 +185,7 @@ router.post('/google', async (req, res) => {
       if (updated) await user.save();
     }
 
-    if (user.role !== 'admin') {
-      if (user.registrationStatus === 'rejected') {
-        return res.status(403).json({ error: 'Your registration was rejected by the administrator.' });
-      }
-    }
+    // Removed manual verification check block
 
     try {
       const tempToken = await prepareSecurityChallenge(user);
