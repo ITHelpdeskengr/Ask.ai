@@ -21,8 +21,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_fallback_secret';
  * Helper to generate a 6-digit code and save to user
  */
 const prepareSecurityChallenge = async (user) => {
-  if (!googleAuthService.isConfigured() || user.role === 'admin') {
-    console.log(`[AUTH] Security challenge skipped: ${user.role === 'admin' ? 'Admin bypass' : 'Service Account not configured'}.`);
+  if (!googleAuthService.isConfigured() || user.role === 'admin' || user.isVerified) {
+    console.log(`[AUTH] Security challenge skipped: ${user.role === 'admin' ? 'Admin bypass' : user.isVerified ? 'User already verified' : 'Service Account not configured'}.`);
     return null;
   }
 
@@ -166,10 +166,13 @@ router.post('/google', async (req, res) => {
         user.avatar = avatar;
         updated = true;
       }
+      if (!user.isVerified) {
+        user.isVerified = true;
+        updated = true;
+      }
       // Auto-approve users who were previously stuck in pending state
       if (user.registrationStatus === 'pending') {
         user.registrationStatus = 'approved';
-        user.isVerified = true;
         updated = true;
       }
       // If it's the admin email but not an admin yet, promote them
