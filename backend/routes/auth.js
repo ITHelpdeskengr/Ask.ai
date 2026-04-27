@@ -185,18 +185,14 @@ router.post('/google', async (req, res) => {
       if (updated) await user.save();
     }
 
-    // Removed manual verification check block
+    if (user.role !== 'admin') {
+      if (user.registrationStatus === 'rejected') {
+        return res.status(403).json({ error: 'Your registration was rejected by the administrator.' });
+      }
+    }
 
     try {
-      const tempToken = await prepareSecurityChallenge(user);
-      if (tempToken) {
-        return res.json({ 
-          requireVerification: true, 
-          tempToken, 
-          email: user.email,
-          accessToken: exchangedAccessToken // Send back the new token retrieved from code
-        });
-      }
+      // Bypassing prepareSecurityChallenge unconditionally
       
       // Standard auth response
       const token = jwt.sign(
