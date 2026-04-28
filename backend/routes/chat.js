@@ -18,7 +18,8 @@ const googleDriveService = require('../services/googleDriveService');
 async function processAgentTask(conversation, messageId, message, attachment, history, reqHeaders, userId, userEmail, userName) {
   try {
     const knowledgeCount = await Knowledge.countDocuments();
-    const knowledgeContext = `\n\n[USER IDENTITY]: You are currently helping ${userName || 'User'} (${userEmail}).\n\n[KNOWLEDGE RETRIEVAL HIERARCHY]:\n1. Use 'search_internal_knowledge' first. You have ${knowledgeCount} documents in KB.\n2. If results are found, you MUST use 'read_internal_document' for each relevant ID to understand the content.\n3. If not found in KB, check local workspace files and private Google Drive.\n4. If STILL not found, you MUST use 'search_the_web'. Never stop until you have checked the web.\n\n[TRANSPARENCY]: Always state your plan and steps clearly before acting.`;
+    console.log(`[AGENT] Starting task for ${userEmail}. KB Count: ${knowledgeCount}`);
+    const knowledgeContext = `\n\n[USER IDENTITY]: You are currently helping ${userName || 'User'} (${userEmail}).\n\n[KNOWLEDGE ACCESS]: You have native access to 318+ documents in the internal KB. You MUST search before answering. Use 'list_recent_knowledge' to see the latest additions if unsure where to start.\n\n[TRANSPARENCY]: Always state your plan and steps clearly before acting.`;
     const messages = [
       { 
         role: 'system', 
@@ -26,6 +27,7 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
       },
       ...history.slice(-15),
     ];
+    console.log(`[AGENT] Message history count: ${history.length}. Included: ${messages.length}`);
 
     if (attachment && attachment.mimeType?.startsWith('image/')) {
       const filePath = path.join(__dirname, '..', attachment.url);
@@ -87,6 +89,17 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
               query: { type: "string", description: "Keyword or phrase to search for in document titles and content" }
             },
             required: ["query"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "list_recent_knowledge",
+          description: "Lists the 10 most recently uploaded/synced documents in the knowledge base. Useful for exploring available documentation.",
+          parameters: {
+            type: "object",
+            properties: {}
           }
         }
       },
@@ -257,6 +270,7 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
             model: modelToUse,
             messages,
             tools,
+            tool_choice: 'auto',
             max_tokens: 2048,
             temperature: 0.7,
           },
@@ -294,6 +308,7 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
 
             if (call.function.name === 'search_internal_knowledge') {
               const query = args.query;
+              console.log(`[TOOL] search_internal_knowledge called with query: "${query}"`);
               // Split query into keywords for a more flexible search
               const keywords = query.split(/\s+/).filter(k => k.length > 2);
               let mongoQuery = {};
@@ -317,6 +332,7 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
               }
 
               const matches = await Knowledge.find(mongoQuery).limit(10).select('title _id');
+              console.log(`[TOOL] Found ${matches.length} matches for "${query}"`);
               
               if (matches.length === 0) {
                 toolResult = `No documents found in the internal knowledge base for "${query}". You should try alternative keywords or fall back to 'search_the_web' if this is a general topic.`;
@@ -324,6 +340,13 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
                 toolResult = `Found ${matches.length} relevant document(s) in Knowledge Base:\n` + 
                   matches.map((m, i) => `${i+1}. "${m.title}" [ID: ${m._id}]`).join('\n') + 
                   "\n\nUse 'read_internal_document' with an ID to see the full content. If this is insufficient, you can ALSO use 'search_the_web' to supplement this information.";
+              }
+            } else if (call.function.name === 'list_recent_knowledge') {
+              const recents = await Knowledge.find({}).sort({ createdAt: -1 }).limit(10).select('title _id');
+              if (recents.length === 0) {
+                toolResult = "Knowledge base is currently empty.";
+              } else {
+                toolResult = `10 Most Recent Documents:\n` + recents.map((r, i) => `${i+1}. "${r.title}" [ID: ${r._id}]`).join('\n');
               }
             } else if (call.function.name === 'read_internal_document') {
               const doc = await Knowledge.findById(args.documentId);
