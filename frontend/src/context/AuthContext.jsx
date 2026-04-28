@@ -194,9 +194,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-        <AuthContext.Provider value={{ 
+    <AuthContext.Provider value={{ 
       user, 
-      token: user?.token,
       login, 
       register,
       loginWithGoogle, 
