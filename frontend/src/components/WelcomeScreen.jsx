@@ -1,13 +1,15 @@
 import { useChat } from '../context/ChatContext';
 import { useAuth } from '../context/AuthContext';
 
-
-
 export default function WelcomeScreen() {
   const { sendMessage } = useChat();
   const { user } = useAuth();
 
   const firstName = user?.name ? user.name.split(' ')[0] : 'there';
+
+  // Time-based greeting
+  const hour = new Date().getHours();
+  const timeGreeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 
   return (
     <div style={{
@@ -33,6 +35,7 @@ export default function WelcomeScreen() {
           letterSpacing: '-0.03em',
           color: 'var(--text-primary)',
         }}>
+          {timeGreeting}, <span style={{ color: 'var(--accent)' }}>{firstName}</span>
           <br />
           How can I help you today?
         </h1>
