@@ -700,10 +700,12 @@ router.post('/message', authMiddleware, async (req, res) => {
       conversation = new Conversation({ sessionId, userId: req.user.id });
     }
     
-    // Save user message and enter processing mode
-    conversation.messages.push({ role: 'user', content: message || '', attachment });
-    conversation.status = 'processing';
-    await conversation.save();
+    // After saving new conversation, set a title based on the first user message if not already set
+    if (!conversation.title && message) {
+      const titleSnippet = (message || '').trim().split('\n')[0].slice(0, 45);
+      conversation.title = titleSnippet || 'New Conversation';
+      await conversation.save();
+    }
 
     // 202 Accepted (Processing in background)
     res.status(202).json({
@@ -741,12 +743,11 @@ router.get('/history/:sessionId', authMiddleware, async (req, res) => {
 router.get('/conversations', authMiddleware, async (req, res) => {
   try {
     const conversations = await Conversation.find({ 
-      isActive: true,
       userId: req.user.id 
     })
       .select('sessionId title updatedAt createdAt status')
       .sort({ updatedAt: -1 })
-      .limit(20);
+      .limit(100);
     res.json({ conversations });
   } catch (err) {
     res.json({ conversations: [] });

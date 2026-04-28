@@ -6,10 +6,9 @@ import { useAuth } from './AuthContext';
 const ChatContext = createContext();
 
 export function ChatProvider({ children }) {
-  const [sessions, setSessions] = useState([
-    { id: uuidv4(), title: 'New Conversation', messages: [], createdAt: new Date(), status: 'idle' }
-  ]);
-  const [activeId, setActiveId] = useState(() => sessions[0].id);
+  const { user, token } = useAuth();
+const [sessions, setSessions] = useState([]);
+  const [activeId, setActiveId] = useState(null);
   const { googleToken } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -19,6 +18,30 @@ export function ChatProvider({ children }) {
 
   useEffect(() => { sessionsRef.current = sessions; }, [sessions]);
   useEffect(() => { activeIdRef.current = activeId; }, [activeId]);
+
+  // Load persisted conversations for the logged‑in user
+  useEffect(() => {
+    if (!user) return; // No user yet
+    const load = async () => {
+      try {
+        const { data } = await api.get('/chat/conversations');
+        if (Array.isArray(data.conversations) && data.conversations.length) {
+          const loaded = data.conversations.map(c => ({
+            id: c.sessionId,
+            title: c.title || 'Conversation',
+            messages: [], // messages will be lazy‑loaded when selected
+            createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
+            status: c.status || 'idle',
+          }));
+          setSessions(loaded);
+          setActiveId(loaded[0].id);
+        }
+      } catch (e) {
+        console.warn('Failed to load conversations', e);
+      }
+    };
+    load();
+  }, [user, token]);
 
   const activeSession = sessions.find(s => s.id === activeId) || sessions[0];
 
