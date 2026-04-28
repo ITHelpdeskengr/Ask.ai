@@ -16,7 +16,12 @@ const app = express();
 connectDB();
 
 // Security middleware
-app.use(helmet({ contentSecurityPolicy: false }));
+// crossOriginOpenerPolicy must be 'same-origin-allow-popups' (not the default 'same-origin')
+// so the Google Sign-In popup at accounts.google.com can post credentials back to this page.
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+}));
 
 // CORS
 const allowedOrigins = [
