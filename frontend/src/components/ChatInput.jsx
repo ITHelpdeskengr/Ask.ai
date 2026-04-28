@@ -14,11 +14,31 @@ export default function ChatInput() {
     setShowMeetingModal, 
     setShowTodoModal, setShowTaskDashboard,
     toggleTheme, logoutUser, deleteCurrentSession,
-    isListening, toggleListening
+    isListening, toggleListening,
+    voiceTranscript, pendingSend, clearVoiceTranscript
   } = useUI();
 
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  // Sync voice transcript into the textarea
+  useEffect(() => {
+    if (voiceTranscript !== undefined) {
+      setValue(voiceTranscript);
+    }
+  }, [voiceTranscript]);
+
+  // Auto-submit when mic is stopped and there is text
+  useEffect(() => {
+    if (pendingSend) {
+      const trimmed = value.trim();
+      if (trimmed) {
+        submit();
+      }
+      clearVoiceTranscript();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingSend]);
 
   useEffect(() => {
     if (textareaRef.current) {

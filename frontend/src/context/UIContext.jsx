@@ -21,7 +21,11 @@ export const UIProvider = ({ children }) => {
   const [isFetchingCalendar, setIsFetchingCalendar] = useState(false);
   
   const [isListening, setIsListening] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState('');
+  const [pendingSend, setPendingSend] = useState(false);
   const recognitionRef = useRef(null);
+  // Accumulate interim transcript across result events
+  const interimRef = useRef('');
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -33,28 +37,44 @@ export const UIProvider = ({ children }) => {
       recognition.lang = 'en-US';
 
       recognition.onresult = (event) => {
-        let finalTranscript = '';
+        let interim = '';
+        let finalChunk = '';
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript;
+            finalChunk += event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
           }
         }
 
-        if (finalTranscript) {
-          const wasCommand = handleVoiceCommand(finalTranscript);
+        if (finalChunk) {
+          // Check if it's a voice command first
+          const wasCommand = handleVoiceCommand(finalChunk.trim());
           if (!wasCommand) {
-             const message = finalTranscript.trim();
-             if (message) {
-               sendMessage(message);
-             }
+            interimRef.current = '';
+            // Append confirmed speech to the input box
+            setVoiceTranscript(prev => (prev ? prev + ' ' : '') + finalChunk.trim());
           }
+        } else if (interim) {
+          // Show live interim in input as a preview (will be overwritten by final)
+          setVoiceTranscript(prev => {
+            const base = prev.replace(interimRef.current, '').trimEnd();
+            interimRef.current = interim;
+            return base ? base + ' ' + interim : interim;
+          });
         }
       };
 
-      recognition.onend = () => setIsListening(false);
+      recognition.onend = () => {
+        setIsListening(false);
+        interimRef.current = '';
+        // Trigger auto-send after stopping
+        setPendingSend(true);
+      };
       recognition.onerror = (event) => {
         console.error('Speech recognition error', event.error);
         setIsListening(false);
+        interimRef.current = '';
       };
 
       recognitionRef.current = recognition;
@@ -121,10 +141,14 @@ export const UIProvider = ({ children }) => {
 
   const toggleListening = () => {
     if (isListening) {
+      // Stop listening — onend will set pendingSend=true to auto-submit
       recognitionRef.current?.stop();
     } else {
       if (recognitionRef.current) {
         try {
+          setVoiceTranscript('');  // Clear previous transcript
+          interimRef.current = '';
+          setPendingSend(false);
           recognitionRef.current.start();
           setIsListening(true);
         } catch (err) {
@@ -134,6 +158,12 @@ export const UIProvider = ({ children }) => {
         alert('Speech recognition is not supported in this browser.');
       }
     }
+  };
+
+  const clearVoiceTranscript = () => {
+    setVoiceTranscript('');
+    setPendingSend(false);
+    interimRef.current = '';
   };
 
   const getTargetSessionId = () => {
@@ -187,7 +217,10 @@ export const UIProvider = ({ children }) => {
     logoutUser,
     deleteCurrentSession,
     isListening,
-    toggleListening
+    toggleListening,
+    voiceTranscript,
+    pendingSend,
+    clearVoiceTranscript
   };
 
   return (
