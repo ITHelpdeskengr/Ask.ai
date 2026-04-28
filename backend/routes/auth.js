@@ -70,9 +70,21 @@ router.post('/register', async (req, res) => {
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ error: 'User already exists' });
 
+    const mainAdminEmail = 'ithelpdeskengr@gmail.com';
+    const isAdmin = email === mainAdminEmail;
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    user = new User({ email, name, password: hashedPassword, isVerified: false });
+    user = new User({
+      email, name, password: hashedPassword, isVerified: false,
+      registrationStatus: isAdmin ? 'approved' : 'pending',
+      role: isAdmin ? 'admin' : 'user'
+    });
     await user.save();
+
+    // Non-admin users must wait for admin approval
+    if (user.role !== 'admin' && user.registrationStatus === 'pending') {
+      return res.json({ pendingApproval: true, isNewUser: true, email: user.email });
+    }
 
     try {
       const tempToken = await prepareSecurityChallenge(user);
@@ -154,11 +166,11 @@ router.post('/google', async (req, res) => {
         name, 
         avatar, 
         isVerified: true, 
-        registrationStatus: 'approved',
+        registrationStatus: isAdmin ? 'approved' : 'pending',
         role: isAdmin ? 'admin' : 'user'
       });
       await user.save();
-      isNewUser = false; // Bypass pending new user flow
+      isNewUser = true;
     } else {
       let updated = false;
       if (!user.googleId) {
@@ -168,11 +180,6 @@ router.post('/google', async (req, res) => {
       }
       if (!user.isVerified) {
         user.isVerified = true;
-        updated = true;
-      }
-      // Auto-approve users who were previously stuck in pending state
-      if (user.registrationStatus === 'pending') {
-        user.registrationStatus = 'approved';
         updated = true;
       }
       // If it's the admin email but not an admin yet, promote them
@@ -185,7 +192,11 @@ router.post('/google', async (req, res) => {
       if (updated) await user.save();
     }
 
+    // Enforce admin approval for non-admin users
     if (user.role !== 'admin') {
+      if (user.registrationStatus === 'pending') {
+        return res.json({ pendingApproval: true, isNewUser, email: user.email });
+      }
       if (user.registrationStatus === 'rejected') {
         return res.status(403).json({ error: 'Your registration was rejected by the administrator.' });
       }
@@ -340,9 +351,14 @@ router.delete('/users/:id', authMiddleware, adminMiddleware, async (req, res) =>
       return res.status(400).json({ error: 'You cannot delete your own admin account.' });
     }
     
+    // Delete all conversations belonging to this user
+    const deleteResult = await Conversation.deleteMany({ userId: user._id });
+    console.log(`[ADMIN] Deleted ${deleteResult.deletedCount} conversations for user ${user.email}`);
+    
     await User.findByIdAndDelete(req.params.id);
-    res.json({ success: true, message: 'User deleted successfully' });
+    res.json({ success: true, message: `User and ${deleteResult.deletedCount} conversation(s) deleted successfully.` });
   } catch (err) {
+    console.error('[DELETE USER ERROR]', err.message);
     res.status(500).json({ error: 'Failed to delete user' });
   }
 });

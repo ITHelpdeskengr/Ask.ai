@@ -24,7 +24,7 @@ export default function Login() {
       result = await login(email, password);
     }
 
-    if (!result.success && !result.requireVerification) {
+    if (!result.success && !result.requireVerification && !result.pendingApproval) {
       setError(result.error);
       setLoading(false);
     }

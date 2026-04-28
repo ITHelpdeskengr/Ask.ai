@@ -42,6 +42,12 @@ export function AuthProvider({ children }) {
   }, [googleToken]);
 
   const handleAuthResponse = useCallback((data) => {
+    // Handle admin approval pending
+    if (data.pendingApproval) {
+      setGoogleAuthPending({ isNewUser: data.isNewUser, email: data.email });
+      return { success: false, pendingApproval: true };
+    }
+
     if (data.requireVerification) {
       setChallengeData({
         tempToken: data.tempToken,

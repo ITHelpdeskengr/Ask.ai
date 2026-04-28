@@ -40,7 +40,7 @@ export default function LoginPage() {
     
     setTimeout(async () => {
       const result = await login(email.trim(), password);
-      if (!result.success) setError(result.error || 'Login failed');
+      if (!result.success && !result.pendingApproval) setError(result.error || 'Login failed');
       setLoading(false);
     }, 400);
   };
@@ -486,7 +486,7 @@ export default function LoginPage() {
                 margin: 0,
               }}>
                 {pendingVerification.isNewUser
-                  ? 'Your Google account has been registered. An admin needs to approve your access before you can sign in.'
+                  ? 'Your account has been registered. An admin needs to approve your access before you can sign in.'
                   : 'Your account is still awaiting admin approval. You\'ll be notified once access is granted.'}
               </p>
             </div>
@@ -519,7 +519,7 @@ export default function LoginPage() {
               gap: 10,
             }}>
               {[
-                { done: true,  label: 'Google account connected' },
+                { done: true,  label: 'Account connected' },
                 { done: true,  label: 'Registration received' },
                 { done: false, label: 'Waiting for admin approval', active: true },
                 { done: false, label: 'Access granted' },

@@ -24,6 +24,10 @@ export default function AdminDashboard() {
   const [theme, setTheme] = useState(document.documentElement.getAttribute('data-theme') || localStorage.getItem('theme') || 'dark');
   const [showSignoutModal, setShowSignoutModal] = useState(false);
 
+  // Delete user modal state
+  const [deleteUserTarget, setDeleteUserTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
   // Mobile sidebar toggle
   const [isMobile, setIsMobile] = useState(window.innerWidth <= MOBILE_BREAKPOINT);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -76,14 +80,22 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDeleteUser = async (userId, name) => {
-    if (!window.confirm(`Are you sure you want to permanently delete the user ${name}?`)) return;
+  const handleDeleteUser = (user) => {
+    setDeleteUserTarget(user);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!deleteUserTarget) return;
+    setDeleting(true);
     try {
-      await api.delete(`/auth/users/${userId}`);
-      setUsers(prev => prev.filter(u => u._id !== userId));
+      await api.delete(`/auth/users/${deleteUserTarget._id}`);
+      setUsers(prev => prev.filter(u => u._id !== deleteUserTarget._id));
+      setDeleteUserTarget(null);
       if (activeTab === 'analytics') fetchInitialData();
     } catch (err) {
       alert(err?.response?.data?.error || 'Failed to delete user.');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -224,7 +236,7 @@ export default function AdminDashboard() {
                               )}
                             </div>
                             
-                            <button title="Delete User" onClick={() => handleDeleteUser(u._id, u.name)} style={{
+                            <button title="Delete User" onClick={() => handleDeleteUser(u)} style={{
                               padding: '6px', background: 'transparent', color: 'var(--accent)', borderRadius: 6, border: 'none', cursor: 'pointer',
                               display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s'
                             }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(230,57,70,0.1)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
@@ -548,6 +560,114 @@ export default function AdminDashboard() {
                 fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', transition: 'filter 0.2s'
               }} onMouseEnter={e => e.currentTarget.style.filter = 'brightness(1.1)'} onMouseLeave={e => e.currentTarget.style.filter = 'brightness(1)'}>
                 Yes, sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete User Confirmation Modal */}
+      {deleteUserTarget && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(0, 0, 0, 0.65)', backdropFilter: 'blur(3px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>
+          <div style={{
+            background: 'var(--bg-surface)', padding: 'clamp(24px, 5vw, 36px) clamp(20px, 5vw, 40px)', borderRadius: 'clamp(16px, 3vw, 24px)',
+            width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', alignItems: 'center',
+            boxShadow: 'var(--shadow-lg)', animation: 'fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            margin: '0 16px'
+          }}>
+            {/* Trash icon */}
+            <div style={{
+              width: 56, height: 56, background: 'rgba(230, 57, 70, 0.1)',
+              borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#e63946', marginBottom: 20
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/>
+              </svg>
+            </div>
+
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '1.4rem', color: 'var(--text-primary)', fontWeight: 800 }}>Delete User</h3>
+
+            {/* User info pill */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              background: 'var(--bg-input)', border: '1px solid var(--border)',
+              borderRadius: 12, padding: '10px 16px', marginBottom: 16, width: '100%',
+            }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+                background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
+              }}>
+                {deleteUserTarget.avatar
+                  ? <img src={deleteUserTarget.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ color: '#fff', fontSize: '0.85rem', fontWeight: 700 }}>
+                      {(deleteUserTarget.name || '?').charAt(0).toUpperCase()}
+                    </span>
+                }
+              </div>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {deleteUserTarget.name}
+                </div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {deleteUserTarget.email}
+                </div>
+              </div>
+              <span style={{
+                padding: '3px 8px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 700,
+                background: deleteUserTarget.role === 'admin' ? 'rgba(29,108,232,0.1)' : 'rgba(155,89,182,0.1)',
+                color: deleteUserTarget.role === 'admin' ? '#1d6ce8' : '#9b59b6',
+                textTransform: 'uppercase', flexShrink: 0,
+              }}>{deleteUserTarget.role}</span>
+            </div>
+
+            <p style={{ margin: '0 0 24px 0', color: 'var(--text-secondary)', textAlign: 'center', fontSize: '0.92rem', lineHeight: 1.5 }}>
+              This will <strong style={{ color: '#e63946' }}>permanently delete</strong> this user and all their conversations. This action cannot be undone.
+            </p>
+
+            <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+              <button
+                onClick={() => setDeleteUserTarget(null)}
+                disabled={deleting}
+                style={{
+                  flex: 1, padding: '14px 0', borderRadius: '12px',
+                  background: 'var(--bg-input)', color: 'var(--text-primary)', border: 'none',
+                  fontWeight: 700, fontSize: '0.95rem', cursor: deleting ? 'default' : 'pointer',
+                  transition: 'background 0.2s', opacity: deleting ? 0.5 : 1,
+                }}
+                onMouseEnter={e => { if (!deleting) e.currentTarget.style.background = 'var(--border)'; }}
+                onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-input)'}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteUser}
+                disabled={deleting}
+                style={{
+                  flex: 1, padding: '14px 0', borderRadius: '12px',
+                  background: '#e63946', color: '#fff', border: 'none',
+                  fontWeight: 700, fontSize: '0.95rem', cursor: deleting ? 'default' : 'pointer',
+                  transition: 'filter 0.2s', opacity: deleting ? 0.8 : 1,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                }}
+                onMouseEnter={e => { if (!deleting) e.currentTarget.style.filter = 'brightness(1.15)'; }}
+                onMouseLeave={e => e.currentTarget.style.filter = 'brightness(1)'}
+              >
+                {deleting ? (
+                  <div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                ) : (
+                  <>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Delete
+                  </>
+                )}
               </button>
             </div>
           </div>
