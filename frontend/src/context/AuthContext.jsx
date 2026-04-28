@@ -125,12 +125,12 @@ export function AuthProvider({ children }) {
 
   // Handle Google Auth safely - move to top level to comply with React Hook rules
   const loginAndAuthorizeWithGoogle = useGoogleLogin({
-    flow: 'auth-code',
-    onSuccess: async (codeResponse) => {
+    flow: 'implicit',
+    onSuccess: async (tokenResponse) => {
       setGoogleAuthLoading(true);
       setGoogleAuthPending(null);
       setGoogleAuthError(null);
-      const result = await loginWithGoogle(codeResponse);
+      const result = await loginWithGoogle(tokenResponse);
       setGoogleAuthLoading(false);
       if (result.pendingApproval) {
         setGoogleAuthPending({ isNewUser: result.isNewUser, email: result.email });
@@ -140,11 +140,10 @@ export function AuthProvider({ children }) {
     },
     onError: (error) => {
       console.error('[GOOGLE AUTH] Error:', error);
-      setGoogleAuthError(error?.error_description || error?.error || 'Google Sign-In was cancelled or failed. Check that your Render URL is in Google Cloud Console Authorized Origins.');
+      setGoogleAuthError(error?.error_description || error?.error || 'Google Sign-In was cancelled or failed.');
       setGoogleAuthLoading(false);
     },
     scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
-    prompt: 'consent',
   });
 
   const requestGoogleAccess = loginAndAuthorizeWithGoogle;
