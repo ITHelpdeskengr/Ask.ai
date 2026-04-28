@@ -388,20 +388,75 @@ export default function AdminDashboard() {
               </button>
             ))}
             
-            {/* Sidebar Bottom Action */}
-            <button className="admin-signout-btn" onClick={() => { setShowSignoutModal(true); if (isMobile) setSidebarOpen(false); }} style={{
-              marginTop: 'auto', display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, padding: isMobile ? '10px 12px' : '14px 16px',
-              borderRadius: isMobile ? 10 : 12, border: 'none', background: 'transparent',
-              color: '#e63946', fontWeight: 600, fontSize: isMobile ? '0.82rem' : '0.95rem',
-              cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left'
-            }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(230,57,70,0.1)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16 17 21 12 16 7"></polyline>
-                <line x1="21" y1="12" x2="9" y2="12"></line>
-              </svg>
-              <span>Sign Out</span>
-            </button>
+            {/* Bottom section: profile + sign out */}
+            <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {/* User Profile Card */}
+              <div
+                onClick={() => handleTabClick('profile')}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 12,
+                  padding: isMobile ? '10px 12px' : '12px 14px',
+                  borderRadius: isMobile ? 10 : 12,
+                  background: activeTab === 'profile' ? 'var(--bg-hover)' : 'var(--bg-input)',
+                  border: '1px solid var(--border)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  marginBottom: 4,
+                }}
+                onMouseEnter={e => { if (activeTab !== 'profile') e.currentTarget.style.background = 'var(--bg-hover)'; }}
+                onMouseLeave={e => { if (activeTab !== 'profile') e.currentTarget.style.background = 'var(--bg-input)'; }}
+              >
+                {/* Avatar */}
+                <div style={{
+                  width: isMobile ? 32 : 36, height: isMobile ? 32 : 36,
+                  borderRadius: '50%', flexShrink: 0,
+                  background: 'var(--accent)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 8px rgba(230,57,70,0.2)',
+                }}>
+                  {currentUser?.avatar
+                    ? <img src={currentUser.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : <span style={{ color: '#fff', fontSize: isMobile ? '0.8rem' : '0.9rem', fontWeight: 700 }}>
+                        {(currentUser?.name || 'A').charAt(0).toUpperCase()}
+                      </span>
+                  }
+                </div>
+                {/* Name + Email */}
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{
+                    fontSize: isMobile ? '0.78rem' : '0.85rem',
+                    fontWeight: 700,
+                    color: 'var(--text-primary)',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {currentUser?.name || 'Admin'}
+                  </div>
+                  <div style={{
+                    fontSize: isMobile ? '0.65rem' : '0.7rem',
+                    color: 'var(--text-muted)',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {currentUser?.email || ''}
+                  </div>
+                </div>
+              </div>
+
+              {/* Sign Out Button */}
+              <button className="admin-signout-btn" onClick={() => { setShowSignoutModal(true); if (isMobile) setSidebarOpen(false); }} style={{
+                display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, padding: isMobile ? '10px 12px' : '14px 16px',
+                borderRadius: isMobile ? 10 : 12, border: 'none', background: 'transparent',
+                color: '#e63946', fontWeight: 600, fontSize: isMobile ? '0.82rem' : '0.95rem',
+                cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left'
+              }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(230,57,70,0.1)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Sign Out</span>
+              </button>
+            </div>
           </div>
 
           {/* Main Content Area */}
