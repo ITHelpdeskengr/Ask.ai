@@ -1,5 +1,5 @@
 const DEFAULT_MODEL = process.env.DEFAULT_MODEL || 'google/gemini-2.0-flash-001';
-const FALLBACK_MODEL = 'google/gemini-2.0-flash-lite-001';
+const FALLBACK_MODEL = process.env.FALLBACK_MODEL || 'google/gemini-2.0-flash-lite-001';
 
 const express = require('express');
 const router = express.Router();
@@ -240,14 +240,16 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
     ];
 
     let modelToUse = DEFAULT_MODEL;
-  let fallbackAttempted = false;
+    let fallbackAttempted = false;
+    let finalAssistantMessage = '';
     let isDone = false;
     let loopCount = 0;
     const workspacePath = path.join(__dirname, '..', '..', 'shared_workspace');
 
     while (!isDone && loopCount < 15) {
       loopCount++;
-            let response;
+      console.log(`[OPENROUTER] Attempting request with model: ${modelToUse} (Loop: ${loopCount})`);
+      let response;
       try {
         response = await axios.post(
           'https://openrouter.ai/api/v1/chat/completions',
@@ -284,11 +286,13 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
 
       if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
         messages.push(responseMessage);
-        // existing tool handling continues
-      } else {
-        finalAssistantMessage = responseMessage.content;
-        isDone = true;
-      }
+
+        for (const call of responseMessage.tool_calls) {
+          try {
+            let toolResult = '';
+            const args = JSON.parse(call.function.arguments || '{}');
+
+            if (call.function.name === 'search_internal_knowledge') {
               const query = args.query;
               // Split query into keywords for a more flexible search
               const keywords = query.split(/\s+/).filter(k => k.length > 2);
