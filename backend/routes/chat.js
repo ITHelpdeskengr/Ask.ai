@@ -1,3 +1,6 @@
+const DEFAULT_MODEL = process.env.DEFAULT_MODEL || 'google/gemini-2.0-flash-001';
+const FALLBACK_MODEL = 'google/gemini-2.0-flash-lite-001';
+
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
@@ -236,46 +239,56 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
       }
     ];
 
-    let finalAssistantMessage = '';
+    let modelToUse = DEFAULT_MODEL;
+  let fallbackAttempted = false;
     let isDone = false;
     let loopCount = 0;
     const workspacePath = path.join(__dirname, '..', '..', 'shared_workspace');
 
     while (!isDone && loopCount < 15) {
       loopCount++;
-      const response = await axios.post(
-        'https://openrouter.ai/api/v1/chat/completions',
-        {
-          model: 'google/gemini-2.0-flash-001',
-          messages,
-          tools,
-          max_tokens: 2048,
-          temperature: 0.7,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-            'HTTP-Referer': 'http://localhost:5173',
-            'X-Title': 'ASK.ai Chatbot',
-            'Content-Type': 'application/json',
+            let response;
+      try {
+        response = await axios.post(
+          'https://openrouter.ai/api/v1/chat/completions',
+          {
+            model: modelToUse,
+            messages,
+            tools,
+            max_tokens: 2048,
+            temperature: 0.7,
           },
-          timeout: 45000,
+          {
+            headers: {
+              'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+              'HTTP-Referer': 'http://localhost:5173',
+              'X-Title': 'ASK.ai Chatbot',
+              'Content-Type': 'application/json',
+            },
+            timeout: 45000,
+          }
+        );
+      } catch (apiErr) {
+        // If primary model fails, fallback to secondary model
+        if (modelToUse === DEFAULT_MODEL) {
+          console.warn('[OPENROUTER] Primary model failed, falling back to fallback model:', apiErr.message);
+          modelToUse = FALLBACK_MODEL;
+          continue; // retry loop iteration with fallback model
+        } else {
+          throw apiErr; // rethrow if fallback also fails
         }
-      );
+      }
+
 
       const responseMessage = response.data.choices[0].message;
 
       if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
         messages.push(responseMessage);
-
-        for (const call of responseMessage.tool_calls) {
-          try {
-            const args = JSON.parse(call.function.arguments);
-            let toolResult = '';
-            
-            // (System logging removed)
-
-            if (call.function.name === 'search_internal_knowledge') {
+        // existing tool handling continues
+      } else {
+        finalAssistantMessage = responseMessage.content;
+        isDone = true;
+      }
               const query = args.query;
               // Split query into keywords for a more flexible search
               const keywords = query.split(/\s+/).filter(k => k.length > 2);
