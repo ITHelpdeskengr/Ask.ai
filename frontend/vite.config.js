@@ -20,7 +20,7 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     chunkSizeWarningLimit: 2000,
-    rolldownOptions: {
+    rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
