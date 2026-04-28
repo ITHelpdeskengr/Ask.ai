@@ -297,13 +297,55 @@ export default function AdminDashboard() {
               <span style={{ fontSize: 'clamp(1.3rem, 4vw, 1.8rem)', flexShrink: 0 }}>🛡️</span> Admin Command Center
             </h2>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 2vw, 16px)', flexShrink: 0 }}>
+            {/* User info */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.5vw, 12px)' }}>
+              <div style={{
+                width: 'clamp(32px, 6vw, 40px)', height: 'clamp(32px, 6vw, 40px)', borderRadius: '50%',
+                background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 'clamp(0.85rem, 2vw, 1.1rem)', color: '#fff', fontWeight: 700,
+                overflow: 'hidden', flexShrink: 0,
+                border: '2px solid var(--border)',
+              }}>
+                {currentUser?.avatar
+                  ? <img src={currentUser.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : (currentUser?.name?.[0]?.toUpperCase() || '?')}
+              </div>
+              <div style={{ display: isMobile ? 'none' : 'flex', flexDirection: 'column', minWidth: 0 }}>
+                <span style={{
+                  fontSize: 'clamp(0.8rem, 2vw, 0.92rem)', fontWeight: 700,
+                  color: 'var(--text-primary)', whiteSpace: 'nowrap',
+                  overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 160,
+                }}>{currentUser?.name || 'Admin'}</span>
+                <span style={{
+                  fontSize: 'clamp(0.65rem, 1.5vw, 0.76rem)', color: 'var(--text-muted)',
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 160,
+                }}>{currentUser?.email || ''}</span>
+              </div>
+            </div>
+
+            {/* Theme toggle */}
             <button onClick={toggleTheme} style={{
               background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-primary)',
-              padding: '8px 12px', borderRadius: '12px', cursor: 'pointer', fontSize: '1.1rem',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
+              width: 'clamp(34px, 6vw, 40px)', height: 'clamp(34px, 6vw, 40px)', borderRadius: 12,
+              cursor: 'pointer', fontSize: '1.1rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', flexShrink: 0,
             }} title="Toggle Theme" onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'} onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-surface)'}>
               {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+
+            {/* Logout button */}
+            <button onClick={() => setShowSignoutModal(true)} style={{
+              background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-muted)',
+              width: 'clamp(34px, 6vw, 40px)', height: 'clamp(34px, 6vw, 40px)', borderRadius: 12,
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', flexShrink: 0,
+            }} title="Sign Out" onMouseEnter={e => { e.currentTarget.style.background = 'rgba(230,57,70,0.1)'; e.currentTarget.style.color = '#e63946'; }} onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
             </button>
           </div>
         </div>
