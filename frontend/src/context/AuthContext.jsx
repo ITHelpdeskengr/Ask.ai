@@ -123,9 +123,11 @@ export function AuthProvider({ children }) {
     }
   }, [handleAuthResponse]);
 
-  // Handle Google Auth safely - move to top level to comply with React Hook rules
+  // ── Login-only Google hook (basic profile scope) ──────────────────────────
+  // Using minimal scope so the consent popup doesn't block unverified apps.
   const loginAndAuthorizeWithGoogle = useGoogleLogin({
     flow: 'implicit',
+    scope: 'openid email profile',
     onSuccess: async (tokenResponse) => {
       setGoogleAuthLoading(true);
       setGoogleAuthPending(null);
@@ -143,10 +145,24 @@ export function AuthProvider({ children }) {
       setGoogleAuthError(error?.error_description || error?.error || 'Google Sign-In was cancelled or failed.');
       setGoogleAuthLoading(false);
     },
-    scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
   });
 
-  const requestGoogleAccess = loginAndAuthorizeWithGoogle;
+  // ── Full-scope Google hook (Gmail / Calendar / Drive) ──────────────────────
+  // Requested only when user explicitly opens Calendar or Gmail features.
+  const requestGoogleAccessHook = useGoogleLogin({
+    flow: 'implicit',
+    scope: 'openid email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.metadata.readonly',
+    onSuccess: async (tokenResponse) => {
+      if (tokenResponse.access_token) {
+        setGoogleToken(tokenResponse.access_token);
+      }
+    },
+    onError: (error) => {
+      console.error('[GOOGLE ACCESS] Error:', error);
+    },
+  });
+
+  const requestGoogleAccess = requestGoogleAccessHook;
 
   const updateProfile = useCallback((updatedUser, newToken) => {
     setUser(prev => ({
