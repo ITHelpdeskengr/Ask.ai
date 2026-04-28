@@ -298,13 +298,6 @@ export default function AdminDashboard() {
             </h2>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-            <button onClick={toggleTheme} style={{
-              background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-primary)',
-              padding: '8px 12px', borderRadius: '12px', cursor: 'pointer', fontSize: '1.1rem',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
-            }} title="Toggle Theme" onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'} onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-surface)'}>
-              {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
           </div>
         </div>
 
@@ -388,73 +381,107 @@ export default function AdminDashboard() {
               </button>
             ))}
             
-            {/* Bottom section: profile + sign out */}
-            <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {/* User Profile Card */}
+            {/* Bottom section: user bar with actions */}
+            <div style={{
+              marginTop: 'auto',
+              display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 10,
+              padding: isMobile ? '10px 8px' : '12px 10px',
+              borderTop: '1px solid var(--border)',
+            }}>
+              {/* Avatar */}
               <div
                 onClick={() => handleTabClick('profile')}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 12,
-                  padding: isMobile ? '10px 12px' : '12px 14px',
-                  borderRadius: isMobile ? 10 : 12,
-                  background: activeTab === 'profile' ? 'var(--bg-hover)' : 'var(--bg-input)',
-                  border: '1px solid var(--border)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  marginBottom: 4,
-                }}
-                onMouseEnter={e => { if (activeTab !== 'profile') e.currentTarget.style.background = 'var(--bg-hover)'; }}
-                onMouseLeave={e => { if (activeTab !== 'profile') e.currentTarget.style.background = 'var(--bg-input)'; }}
-              >
-                {/* Avatar */}
-                <div style={{
                   width: isMobile ? 32 : 36, height: isMobile ? 32 : 36,
                   borderRadius: '50%', flexShrink: 0,
                   background: 'var(--accent)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   overflow: 'hidden',
+                  cursor: 'pointer',
                   boxShadow: '0 2px 8px rgba(230,57,70,0.2)',
+                }}
+              >
+                {currentUser?.avatar
+                  ? <img src={currentUser.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ color: '#fff', fontSize: isMobile ? '0.8rem' : '0.9rem', fontWeight: 700 }}>
+                      {(currentUser?.name || 'A').charAt(0).toUpperCase()}
+                    </span>
+                }
+              </div>
+              {/* Name + Email */}
+              <div
+                onClick={() => handleTabClick('profile')}
+                style={{ minWidth: 0, flex: 1, cursor: 'pointer' }}
+              >
+                <div style={{
+                  fontSize: isMobile ? '0.78rem' : '0.85rem',
+                  fontWeight: 700,
+                  color: 'var(--text-primary)',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  lineHeight: 1.3,
                 }}>
-                  {currentUser?.avatar
-                    ? <img src={currentUser.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <span style={{ color: '#fff', fontSize: isMobile ? '0.8rem' : '0.9rem', fontWeight: 700 }}>
-                        {(currentUser?.name || 'A').charAt(0).toUpperCase()}
-                      </span>
-                  }
+                  {currentUser?.name || 'Admin'}
                 </div>
-                {/* Name + Email */}
-                <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{
-                    fontSize: isMobile ? '0.78rem' : '0.85rem',
-                    fontWeight: 700,
-                    color: 'var(--text-primary)',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
-                    {currentUser?.name || 'Admin'}
-                  </div>
-                  <div style={{
-                    fontSize: isMobile ? '0.65rem' : '0.7rem',
-                    color: 'var(--text-muted)',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
-                    {currentUser?.email || ''}
-                  </div>
+                <div style={{
+                  fontSize: isMobile ? '0.62rem' : '0.68rem',
+                  color: 'var(--text-muted)',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  lineHeight: 1.3,
+                }}>
+                  {currentUser?.email || ''}
                 </div>
               </div>
-
-              {/* Sign Out Button */}
-              <button className="admin-signout-btn" onClick={() => { setShowSignoutModal(true); if (isMobile) setSidebarOpen(false); }} style={{
-                display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, padding: isMobile ? '10px 12px' : '14px 16px',
-                borderRadius: isMobile ? 10 : 12, border: 'none', background: 'transparent',
-                color: '#e63946', fontWeight: 600, fontSize: isMobile ? '0.82rem' : '0.95rem',
-                cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left'
-              }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(230,57,70,0.1)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
+              {/* Theme toggle icon button */}
+              <button
+                onClick={toggleTheme}
+                title="Toggle Theme"
+                style={{
+                  width: isMobile ? 32 : 36, height: isMobile ? 32 : 36,
+                  borderRadius: isMobile ? 8 : 10, flexShrink: 0,
+                  background: 'var(--bg-input)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-secondary)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-input)'}
+              >
+                {theme === 'dark' ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="5" />
+                    <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                    <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                )}
+              </button>
+              {/* Sign out icon button */}
+              <button
+                onClick={() => { setShowSignoutModal(true); if (isMobile) setSidebarOpen(false); }}
+                title="Sign Out"
+                style={{
+                  width: isMobile ? 32 : 36, height: isMobile ? 32 : 36,
+                  borderRadius: isMobile ? 8 : 10, flexShrink: 0,
+                  background: 'var(--bg-input)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-secondary)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(230,57,70,0.15)'; e.currentTarget.style.color = '#e63946'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-input)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
                 </svg>
-                <span>Sign Out</span>
               </button>
             </div>
           </div>
