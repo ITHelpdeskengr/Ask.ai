@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
 import { useGoogleLogin } from '@react-oauth/google';
 import api from '../utils/api';
 
+
 const AuthContext = createContext();
 
 const STORAGE_KEY = 'ask_ai_user';
@@ -123,29 +124,37 @@ export function AuthProvider({ children }) {
     }
   }, [handleAuthResponse]);
 
-  // ── Login-only Google hook (basic profile scope) ──────────────────────────
-  // Using minimal scope so the consent popup doesn't block unverified apps.
-  const loginAndAuthorizeWithGoogle = useGoogleLogin({
-    flow: 'implicit',
-    scope: 'openid email profile',
-    onSuccess: async (tokenResponse) => {
-      setGoogleAuthLoading(true);
-      setGoogleAuthPending(null);
-      setGoogleAuthError(null);
-      const result = await loginWithGoogle(tokenResponse);
-      setGoogleAuthLoading(false);
-      if (result.pendingApproval) {
-        setGoogleAuthPending({ isNewUser: result.isNewUser, email: result.email });
-      } else if (!result.success && !result.requireVerification) {
-        setGoogleAuthError(result.error || 'Google Sign-In failed. Please try again.');
+  // ── Login Google hook using credential/idToken flow (no postmessage needed) ──
+  // This uses the popup that returns a credential (idToken) directly,
+  // which the backend already supports via the idToken path.
+  const handleGoogleCredential = useCallback(async (credentialResponse) => {
+    setGoogleAuthLoading(true);
+    setGoogleAuthPending(null);
+    setGoogleAuthError(null);
+    try {
+      const { data } = await api.post('/auth/google', { idToken: credentialResponse.credential });
+      if (data.pendingApproval) {
+        setGoogleAuthPending({ isNewUser: data.isNewUser, email: data.email });
+      } else {
+        const authResult = handleAuthResponse(data);
+        if (!authResult.success && !authResult.requireVerification) {
+          setGoogleAuthError('Google Sign-In failed. Please try again.');
+        }
       }
-    },
-    onError: (error) => {
-      console.error('[GOOGLE AUTH] Error:', error);
-      setGoogleAuthError(error?.error_description || error?.error || 'Google Sign-In was cancelled or failed.');
+    } catch (err) {
+      setGoogleAuthError(err.response?.data?.error || 'Google Sign-In failed. Please try again.');
+    } finally {
       setGoogleAuthLoading(false);
-    },
-  });
+    }
+  }, [handleAuthResponse]);
+
+  const handleGoogleCredentialError = useCallback(() => {
+    setGoogleAuthError('Google Sign-In was cancelled or failed.');
+    setGoogleAuthLoading(false);
+  }, []);
+
+  // loginAndAuthorizeWithGoogle is kept for backward-compat (used in LoginPage)
+  const loginAndAuthorizeWithGoogle = { handleGoogleCredential, handleGoogleCredentialError };
 
   // ── Full-scope Google hook (Gmail / Calendar / Drive) ──────────────────────
   // Requested only when user explicitly opens Calendar or Gmail features.
