@@ -355,7 +355,8 @@ export default function MessageBubble({ message }) {
                 </div>
 
                 {/* Feedback Widget */}
-                <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {!(message.isError || message.metadata?.isError) && (
+                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
                     {feedback === null ? 'Did I resolve your problem?' : feedback === 'yes' ? 'Glad I could help!' : 'Sorry to hear that, I will try to do better!'}
                   </span>
@@ -412,7 +413,7 @@ export default function MessageBubble({ message }) {
                       </svg>
                     </a>
                   </div>
-                </div>
+                )}
               </>
             )
           )}

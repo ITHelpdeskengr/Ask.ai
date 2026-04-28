@@ -246,7 +246,7 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
       const response = await axios.post(
         'https://openrouter.ai/api/v1/chat/completions',
         {
-          model: 'google/gemini-2.0-flash-001',
+          models: ['google/gemini-2.0-flash-001', 'google/gemini-1.5-flash', 'openai/gpt-4o-mini'],
           messages,
           tools,
           max_tokens: 2048,
@@ -673,7 +673,11 @@ async function processAgentTask(conversation, messageId, message, attachment, hi
 
     try {
       let cov = await Conversation.findById(conversation._id);
-      cov.messages.push({ role: 'assistant', content: errorMsg });
+      cov.messages.push({ 
+        role: 'assistant', 
+        content: errorMsg,
+        metadata: { isError: true } 
+      });
       cov.status = 'idle';
       await cov.save();
     } catch (saveErr) {
