@@ -702,15 +702,15 @@ function ProfileTab({ currentUser, users, updateProfile }) {
   );
 
   const inputStyle = {
-    flex: 1, padding: '11px 12px',
+    flex: 1, padding: '8px 10px',
     background: 'none', border: 'none', outline: 'none',
-    color: 'var(--text-primary)', fontSize: '0.9rem', fontFamily: 'inherit',
+    color: 'var(--text-primary)', fontSize: '0.85rem', fontFamily: 'inherit',
   };
 
   const fieldWrap = (focusRef) => ({
     display: 'flex', alignItems: 'center',
     background: 'var(--bg-input)', border: '1.5px solid var(--border)',
-    borderRadius: 12, padding: '0 12px',
+    borderRadius: 10, padding: '0 10px',
     transition: 'border-color 0.2s',
     overflow: 'hidden',
   });
@@ -738,26 +738,26 @@ function ProfileTab({ currentUser, users, updateProfile }) {
   };
 
   const Label = ({ children }) => (
-    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>
+    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>
       {children}
     </label>
   );
 
   return (
-    <div style={{ padding: 'clamp(16px, 4vw, 40px)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+    <div style={{ padding: 'clamp(12px, 3vw, 28px)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
       <div className="admin-profile-card" style={{
         background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: 24, padding: 'clamp(20px, 4vw, 40px)', width: '100%', maxWidth: 800, margin: '0 auto',
-        boxShadow: '0 12px 48px rgba(0,0,0,0.12)',
+        borderRadius: 18, padding: 'clamp(16px, 3vw, 28px)', width: '100%', maxWidth: 680, margin: '0 auto',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
       }}>
 
         {/* Avatar + badge */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <div style={{ textAlign: 'center', marginBottom: 20 }}>
           <div style={{
-            width: 96, height: 96, borderRadius: '50%', background: 'var(--accent)',
-            margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '2.4rem', color: '#fff', overflow: 'hidden',
-            boxShadow: '0 6px 24px rgba(230,57,70,0.3)',
+            width: 68, height: 68, borderRadius: '50%', background: 'var(--accent)',
+            margin: '0 auto 10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.8rem', color: '#fff', overflow: 'hidden',
+            boxShadow: '0 4px 16px rgba(230,57,70,0.25)',
           }}>
             {currentUser?.avatar
               ? <img src={currentUser.avatar} alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -765,21 +765,21 @@ function ProfileTab({ currentUser, users, updateProfile }) {
           </div>
           <div style={{
             display: 'inline-block', background: 'rgba(230,57,70,0.1)',
-            color: 'var(--accent)', padding: '4px 14px', borderRadius: 99,
-            fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.06em',
+            color: 'var(--accent)', padding: '3px 12px', borderRadius: 99,
+            fontWeight: 700, fontSize: '0.72rem', letterSpacing: '0.06em',
           }}>ADMINISTRATOR</div>
-          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'center' }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>{users.length}</div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Managed</div>
+              <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)' }}>{users.length}</div>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Managed</div>
             </div>
           </div>
         </div>
 
         {/* Section title */}
-        <div style={{ marginBottom: 24 }}>
-          <h3 style={{ margin: '0 0 4px', fontSize: '1.05rem', color: 'var(--text-primary)' }}>Edit Profile</h3>
-          <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-muted)' }}>Update your display name or change your login password.</p>
+        <div style={{ marginBottom: 16 }}>
+          <h3 style={{ margin: '0 0 2px', fontSize: '0.95rem', color: 'var(--text-primary)' }}>Edit Profile</h3>
+          <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-muted)' }}>Update your display name or change your login password.</p>
         </div>
 
         {/* Feedback banners */}
@@ -799,13 +799,13 @@ function ProfileTab({ currentUser, users, updateProfile }) {
         )}
 
         {/* ── Username ── */}
-        <div style={{ marginBottom: 16 }}>
+        <div style={{ marginBottom: 12 }}>
           <Label>Display Name</Label>
           <div style={fieldWrap()}
             onFocusCapture={e => e.currentTarget.style.borderColor = 'var(--accent)'}
             onBlurCapture={e => e.currentTarget.style.borderColor = 'var(--border)'}
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
             </svg>
             <input
@@ -818,10 +818,10 @@ function ProfileTab({ currentUser, users, updateProfile }) {
         </div>
 
         {/* ── Email (read-only) ── */}
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 16 }}>
           <Label>Email Address <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(read-only)</span></Label>
           <div style={{ ...fieldWrap(), opacity: 0.6, cursor: 'not-allowed' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
             </svg>
             <input readOnly value={currentUser?.email || ''} style={{ ...inputStyle, cursor: 'not-allowed' }} />
@@ -830,18 +830,18 @@ function ProfileTab({ currentUser, users, updateProfile }) {
 
         {/* ── Change Password ── */}
         <div style={{
-          background: 'var(--bg-input)', borderRadius: 16, padding: 20,
-          border: '1px solid var(--border)', marginBottom: 24,
+          background: 'var(--bg-input)', borderRadius: 12, padding: 14,
+          border: '1px solid var(--border)', marginBottom: 16,
         }}>
-          <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>Change Password</span>
+            <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>Change Password</span>
           </div>
 
           {/* Current password */}
-          <div style={{ marginBottom: 12 }}>
+          <div style={{ marginBottom: 10 }}>
             <Label>Current Password</Label>
             <div style={fieldWrap()}
               onFocusCapture={e => e.currentTarget.style.borderColor = 'var(--accent)'}
@@ -862,7 +862,7 @@ function ProfileTab({ currentUser, users, updateProfile }) {
           </div>
 
           {/* New password */}
-          <div style={{ marginBottom: 12 }}>
+          <div style={{ marginBottom: 10 }}>
             <Label>New Password</Label>
             <div style={fieldWrap()}
               onFocusCapture={e => e.currentTarget.style.borderColor = 'var(--accent)'}
@@ -915,21 +915,21 @@ function ProfileTab({ currentUser, users, updateProfile }) {
           onClick={handleSave}
           disabled={loading}
           style={{
-            width: '100%', padding: '13px 0',
+            width: '100%', padding: '10px 0',
             background: 'var(--accent)', color: '#fff',
-            borderRadius: 12, fontWeight: 700, fontSize: '0.95rem',
+            borderRadius: 10, fontWeight: 700, fontSize: '0.88rem',
             border: 'none', cursor: loading ? 'default' : 'pointer',
             opacity: loading ? 0.7 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            transition: 'all 0.2s', boxShadow: '0 4px 16px rgba(230,57,70,0.25)',
+            transition: 'all 0.2s', boxShadow: '0 3px 12px rgba(230,57,70,0.22)',
           }}
           onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'translateY(-1px)'; }}
           onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
         >
           {loading
-            ? <div style={{ width: 18, height: 18, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+            ? <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
             : <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" />
                 </svg>
                 Save Changes
