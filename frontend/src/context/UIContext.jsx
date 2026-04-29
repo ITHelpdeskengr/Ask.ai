@@ -24,8 +24,8 @@ export const UIProvider = ({ children }) => {
   const [voiceTranscript, setVoiceTranscript] = useState('');
   const [pendingSend, setPendingSend] = useState(false);
   const recognitionRef = useRef(null);
-  // Accumulate interim transcript across result events
-  const interimRef = useRef('');
+  // Tracks finalized (confirmed) speech text between result events
+  const confirmedRef = useRef('');
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -38,43 +38,46 @@ export const UIProvider = ({ children }) => {
 
       recognition.onresult = (event) => {
         let interim = '';
-        let finalChunk = '';
+        let newFinalText = '';
+
         for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
-            finalChunk += event.results[i][0].transcript;
+            newFinalText += transcript;
           } else {
-            interim += event.results[i][0].transcript;
+            interim += transcript;
           }
         }
 
-        if (finalChunk) {
-          // Check if it's a voice command first
-          const wasCommand = handleVoiceCommand(finalChunk.trim());
+        if (newFinalText) {
+          const trimmedFinal = newFinalText.trim();
+          // Check if the newly finalized text is a standalone voice command
+          const wasCommand = handleVoiceCommand(trimmedFinal);
           if (!wasCommand) {
-            interimRef.current = '';
-            // Append confirmed speech to the input box
-            setVoiceTranscript(prev => (prev ? prev + ' ' : '') + finalChunk.trim());
+            // Append to confirmed text (no interim in confirmed)
+            const separator = confirmedRef.current ? ' ' : '';
+            confirmedRef.current = confirmedRef.current + separator + trimmedFinal;
           }
-        } else if (interim) {
-          // Show live interim in input as a preview (will be overwritten by final)
-          setVoiceTranscript(prev => {
-            const base = prev.replace(interimRef.current, '').trimEnd();
-            interimRef.current = interim;
-            return base ? base + ' ' + interim : interim;
-          });
         }
+
+        // Always update display: confirmed base + live interim preview
+        const display = interim
+          ? (confirmedRef.current ? confirmedRef.current + ' ' + interim : interim)
+          : confirmedRef.current;
+        setVoiceTranscript(display);
       };
 
       recognition.onend = () => {
         setIsListening(false);
-        interimRef.current = '';
+        confirmedRef.current = '';
         // Trigger auto-send after stopping
         setPendingSend(true);
       };
       recognition.onerror = (event) => {
+        if (event.error === 'no-speech' || event.error === 'aborted') return;
         console.error('Speech recognition error', event.error);
         setIsListening(false);
-        interimRef.current = '';
+        confirmedRef.current = '';
       };
 
       recognitionRef.current = recognition;
@@ -147,7 +150,7 @@ export const UIProvider = ({ children }) => {
       if (recognitionRef.current) {
         try {
           setVoiceTranscript('');  // Clear previous transcript
-          interimRef.current = '';
+          confirmedRef.current = '';
           setPendingSend(false);
           recognitionRef.current.start();
           setIsListening(true);
@@ -163,7 +166,7 @@ export const UIProvider = ({ children }) => {
   const clearVoiceTranscript = () => {
     setVoiceTranscript('');
     setPendingSend(false);
-    interimRef.current = '';
+    confirmedRef.current = '';
   };
 
   const getTargetSessionId = () => {
